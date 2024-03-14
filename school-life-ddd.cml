@@ -1,0 +1,230 @@
+/*
+ * Context mapping explained https://youtu.be/k5i4sP9q2Lk
+ *
+ * Let's imagine, we would like to implement a simple application for managing a school.
+ * In our company, we have many different teams.
+ * We are only doing the context mapping for implementing a Workshop management system but we can also have : 
+ * * a CourseContext --> to manage courses
+ * * a ClassRoomContext --> to manage class room booking
+ * * a PaymentContext --> to manage teachers salary
+ * and so on...
+ */
+ContextMap SchoolLifeMapping {
+	contains WorkshopContext
+	contains TeacherContext
+    contains StudentContext
+	contains UserManagementContext
+	contains EquipmentContext
+	
+	// U (Upstream) / D (Downstream) => An upstream contextt will influence the downstream counterpart, the opposite might not be true
+	// OHS (Open-host Service) => Like a public API for several consumers, has a common, general purpose model and functionality (is always an upstream)
+	// ACL (Anti-Corruption Layer) => Translates one model to another one to reduce the amount to coupling (is always a downstream)
+
+	WorkshopContext [D, ACL] <- [U, OHS] TeacherContext {
+		implementationTechnology = "RESTfulHTTP"
+		exposedAggregates Teachers
+	}
+
+	WorkshopContext [D, ACL] <- [U, OHS] StudentContext {
+		implementationTechnology = "RESTfulHTTP"
+		exposedAggregates Students
+	}
+
+	TeacherContext [D, ACL] <- [U, OHS] UserManagementContext {
+		implementationTechnology = "RESTfulHTTP"
+		exposedAggregates UserAccounts
+	}
+
+	StudentContext [D, ACL] <- [U, OHS] UserManagementContext {
+		implementationTechnology = "RESTfulHTTP"
+		exposedAggregates UserAccounts
+	}
+	
+	WorkshopContext [D, ACL] <- [U, OHS] EquipmentContext {
+		implementationTechnology = "Kafka"
+	}
+}
+
+/* Bounded Context Definitions */
+BoundedContext WorkshopContext implements WorkshopDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context manages workshops, teachers can plan/cancel workshops and students can register to existing workshops."
+	responsibilities = "Workshops"
+	implementationTechnology = "Java, Spring Boot"
+	knowledgeLevel = CONCRETE
+
+	Aggregate Workshops {
+		owner WorkshopsTeam
+
+		Entity Workshop {
+			aggregateRoot
+
+			- WorkshopId id
+			String title
+			String description
+			String where
+			Date when
+			- YearRange target
+			- Capacity capacity
+			- Teacher teacher
+			- List<Student> students
+			- List<Equipment> equipments
+		}
+
+		ValueObject WorkshopId {
+			int workshopId key
+		}
+
+		ValueObject YearRange {
+			int fromYear key
+			int toYear key
+		}
+
+		ValueObject Capacity {
+			int fromNumber key
+			int toNumber key
+		}
+	}
+}
+
+BoundedContext TeacherContext implements TeacherDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context allows teachers to modify their data."
+	responsibilities = "Teachers, Accounts"
+	implementationTechnology = "Java, Spring Boot"
+	knowledgeLevel = CONCRETE
+
+	Aggregate Teachers {
+		owner UsersManagementTeam
+
+		Entity Teacher {
+			aggregateRoot
+
+			- TeacherId teacherId
+			- UserAccount userAccount
+			String lastname
+			String firstname
+			String resume
+		}
+
+		ValueObject TeacherId {
+			int teacherId key
+		}
+	}
+}
+
+BoundedContext StudentContext implements StudentDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context allows teachers manage data of students."
+	responsibilities = "Students"
+	implementationTechnology = "Java, Spring Boot"
+	knowledgeLevel = CONCRETE
+
+	Aggregate Students {
+		owner UsersManagementTeam
+
+		Entity Student {
+			aggregateRoot
+
+			- StudentId studentId
+			- UserAccount userAccount
+			String lastname
+			String firstname
+			Date dateOfBirth
+		}
+
+		ValueObject StudentId {
+			int studentId key
+		}
+	}
+}
+
+BoundedContext UserManagementContext implements UserManagementDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context allows administrators to manage user accounts, teachers and students to sign in."
+	responsibilities = "Authentication, Authorization"
+	implementationTechnology = "Java, Spring Boot"
+	knowledgeLevel = CONCRETE
+
+	Aggregate UserAccounts {
+		owner UsersManagementTeam
+
+		Entity UserAccount {
+			aggregateRoot
+
+			- UserName userName
+			- EmailAddress emailAddress
+			- List<Role> roles
+		}
+
+		ValueObject UserName {
+			String emailAddress key
+		}
+
+		ValueObject EmailAddress {
+			String emailAddress key
+		}
+
+		enum Role {
+			ADMIN, TEACHER, STUDENT
+		}
+	}
+}
+
+BoundedContext EquipmentContext implements EquipmentDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context allows teachers manage equipments."
+	responsibilities = "Equipments"
+	implementationTechnology = "Java, Spring Boot"
+	knowledgeLevel = CONCRETE
+
+	Aggregate Equipments {
+		owner WorkshopsTeam
+
+		Entity Equipment {
+			aggregateRoot
+
+			- EquipmentId equipmentId
+			String name
+			String description
+			int quantity
+		}
+
+		ValueObject EquipmentId {
+			int equipmentId key
+		}
+	}
+}
+
+/* Team's: */
+BoundedContext WorkshopsTeam { type TEAM }
+BoundedContext UsersManagementTeam { type TEAM }
+
+/* Domain & Subdomain Definitions */
+Domain SchoolLifeDomain {
+
+	Subdomain WorkshopDomain {
+		type = CORE_DOMAIN // The most important subdomains, the heart of the business
+		domainVisionStatement = "Subdomain managing everything related to workshops."
+	}
+
+	Subdomain TeacherDomain {
+		type = SUPPORTING_DOMAIN // Vital for operating of core (sub)domains
+		domainVisionStatement = "Subdomain managing everything related to teachers."
+	}
+
+	Subdomain StudentDomain {
+		type = SUPPORTING_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to students."
+	}
+
+	Subdomain UserManagementDomain {
+		type = SUPPORTING_DOMAIN
+		domainVisionStatement = "Subdomain managing everything relate to user accounts."
+	}
+
+	Subdomain EquipmentDomain {
+		type = GENERIC_SUBDOMAIN // Needed functionality which is not critical at all
+		domainVisionStatement = "Subdomain managing everything related to equipments."
+	}
+}
