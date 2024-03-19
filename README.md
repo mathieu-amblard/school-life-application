@@ -1,1 +1,1 @@
-# workshop-application
+# School Life Application

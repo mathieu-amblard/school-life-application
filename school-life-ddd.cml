@@ -72,7 +72,7 @@ BoundedContext WorkshopContext implements WorkshopDomain {
 		}
 
 		ValueObject WorkshopId {
-			int workshopId key
+			int value key
 		}
 
 		ValueObject YearRange {
@@ -108,7 +108,7 @@ BoundedContext TeacherContext implements TeacherDomain {
 		}
 
 		ValueObject TeacherId {
-			int teacherId key
+			int value key
 		}
 	}
 }
@@ -134,7 +134,7 @@ BoundedContext StudentContext implements StudentDomain {
 		}
 
 		ValueObject StudentId {
-			int studentId key
+			int value key
 		}
 	}
 }
@@ -152,17 +152,17 @@ BoundedContext UserManagementContext implements UserManagementDomain {
 		Entity UserAccount {
 			aggregateRoot
 
-			- UserName userName
+			- Username username
 			- EmailAddress emailAddress
 			- List<Role> roles
 		}
 
-		ValueObject UserName {
-			String emailAddress key
+		ValueObject Username {
+			String value key
 		}
 
 		ValueObject EmailAddress {
-			String emailAddress key
+			String value key
 		}
 
 		enum Role {
@@ -191,7 +191,7 @@ BoundedContext EquipmentContext implements EquipmentDomain {
 		}
 
 		ValueObject EquipmentId {
-			int equipmentId key
+			int value key
 		}
 	}
 }
