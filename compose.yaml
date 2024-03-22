@@ -1,0 +1,12 @@
+services:
+  postgres:
+    container_name: 'school-life-database'
+    image: 'postgres:latest'
+    volumes:
+      - ./postgres-init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      - 'POSTGRES_MULTIPLE_DATABASES=user_management_database,student_database'
+      - 'POSTGRES_USER=user'
+      - 'POSTGRES_PASSWORD=secret'
+    ports:
+      - '5432:5432'

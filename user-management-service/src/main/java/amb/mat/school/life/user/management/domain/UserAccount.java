@@ -2,12 +2,14 @@ package amb.mat.school.life.user.management.domain;
 
 import java.util.List;
 
+// TODO record ?
+
 /**
  * Business Rules :
  * - The username is mandatory.
  * - The email address is mandatory.
- * - The account must have at least one role
- * - ADMIN role is not compatible with STUDENT
+ * - The account must have at least one role.
+ * - ADMIN role is not compatible with STUDENT.
  */
 public class UserAccount {
 
