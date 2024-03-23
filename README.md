@@ -1,6 +1,16 @@
 # School Life Application
 
-## postgres
+## Springdoc
+
+http://localhost:8080/swagger-ui.html
+
+## Postgres
+
+### Start the container in the background
+
+```shell
+docker compose up --detach
+```
 
 ### Error : PostgreSQL Database directory appears to contain a database; Skipping initialization
 

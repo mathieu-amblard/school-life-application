@@ -142,9 +142,9 @@ BoundedContext StudentContext implements StudentDomain {
 
 BoundedContext UserManagementContext implements UserManagementDomain {
 	type = APPLICATION
-	domainVisionStatement = "This bounded context allows administrators to manage user accounts, teachers and students to sign in."
+	domainVisionStatement = "This bounded context allows administrators to manage user accounts, users (i.e. students and teachers) to sign in."
 	responsibilities = "Authentication, Authorization"
-	implementationTechnology = "Java, Spring Boot"
+	implementationTechnology = "Java, Spring Boot, OAuth2 Server"
 	knowledgeLevel = CONCRETE
 
 	Aggregate UserAccounts {
