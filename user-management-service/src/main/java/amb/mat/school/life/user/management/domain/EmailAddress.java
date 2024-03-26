@@ -5,7 +5,7 @@ package amb.mat.school.life.user.management.domain;
  * - The email address is mandatory.
  * - The email address is valid.
  */
-record EmailAddress(String value) {
+public record EmailAddress(String value) {
 
     private static final String EMAIL_FIRST_PART_REGEX = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*";
     private static final String EMAIL_SECOND_PART_REGEX = "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";

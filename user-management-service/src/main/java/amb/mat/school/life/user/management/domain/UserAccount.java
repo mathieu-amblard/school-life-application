@@ -16,14 +16,16 @@ public class UserAccount {
     private final Username username;
     private final EmailAddress emailAddress;
     private final List<Role> roles;
+    private final Username owner;
 
-    public UserAccount(Username username, EmailAddress emailAddress, List<Role> roles) {
+    public UserAccount(Username username, EmailAddress emailAddress, List<Role> roles, Username owner) {
         checkUsernameMandatory(username);
         checkEmailAddressMandatory(emailAddress);
         checkRoleCompatibility(roles);
         this.username = username;
         this.emailAddress = emailAddress;
         this.roles = roles;
+        this.owner = owner;
     }
 
     private void checkUsernameMandatory(Username username) {

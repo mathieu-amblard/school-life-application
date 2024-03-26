@@ -156,6 +156,7 @@ BoundedContext UserManagementContext implements UserManagementDomain {
 			- Username username
 			- EmailAddress emailAddress
 			- List<Role> roles
+			- Username owner
 		}
 
 		ValueObject Username {

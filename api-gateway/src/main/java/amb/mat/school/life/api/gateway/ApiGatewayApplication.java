@@ -18,6 +18,14 @@ public class ApiGatewayApplication {
         return routeLocatorBuilder
                 .routes()
                 .route(route -> route
+                        .path("/user/**")
+                        .filters(filter -> filter
+                                .rewritePath("/user/(?<segment>.*)", "/${segment}")
+                                .tokenRelay()
+                        )
+                        .uri("http://localhost:8081")
+                )
+                .route(route -> route
                         .path("/student/**")
                         .filters(filter -> filter
                                 .rewritePath("/student/(?<segment>.*)", "/${segment}")

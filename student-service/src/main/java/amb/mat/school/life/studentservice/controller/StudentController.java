@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/students")
 public class StudentController {
 
-    // TODO to manage existing roles : https://www.baeldung.com/spring-security-oauth-principal-authorities-extractor
-
-    @PreAuthorize("hasAuthority('SCOPE_student.read')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public String get() {
         System.out.println("I have been called with user " + ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaims());
+        System.out.println("I have been called with user + authorities " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return "Hello";
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_student.write')")
+    @PreAuthorize("hasRole('admin')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody CreateStudentCommand command) {

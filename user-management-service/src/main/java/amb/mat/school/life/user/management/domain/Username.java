@@ -7,7 +7,7 @@ package amb.mat.school.life.user.management.domain;
  * - The first character of the username must be an alphabetic character.
  * - The username can only contain alphanumeric characters and underscores (_).
  */
-record Username(String value) {
+public record Username(String value) {
 
     private static final int MIN_LENGTH = 6;
     private static final int MAX_LENGTH = 30;
