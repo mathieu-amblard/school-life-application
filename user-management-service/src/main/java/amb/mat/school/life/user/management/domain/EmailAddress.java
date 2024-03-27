@@ -12,17 +12,17 @@ public record EmailAddress(String value) {
     private static final String EMAIL_REGEX = "%s@%s".formatted(EMAIL_FIRST_PART_REGEX, EMAIL_SECOND_PART_REGEX);
 
     public EmailAddress {
-        checkMandatory();
-        checkValid();
+        checkMandatory(value);
+        checkValid(value);
     }
 
-    private void checkMandatory() {
+    private void checkMandatory(String value) {
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");
         }
     }
 
-    private void checkValid() {
+    private void checkValid(String value) {
         if (value != null && !value.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("value must be a valid email address");
         }

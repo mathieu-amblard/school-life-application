@@ -45,4 +45,16 @@ public class UserAccount {
             throw new IllegalArgumentException("%s are incompatible".formatted(roles));
         }
     }
+
+    public Username username() {
+        return username;
+    }
+
+    public EmailAddress emailAddress() {
+        return emailAddress;
+    }
+
+    public List<Role> roles() {
+        return roles;
+    }
 }
