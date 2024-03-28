@@ -15,4 +15,8 @@ public enum Role {
     public boolean isCompatibleWith(List<Role> roles) {
         return true;
     }
+
+    public static Role of(String value) {
+        return Role.valueOf(value.toUpperCase());
+    }
 }

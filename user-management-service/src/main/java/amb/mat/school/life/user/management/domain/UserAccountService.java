@@ -1,6 +1,9 @@
 package amb.mat.school.life.user.management.domain;
 
+import amb.mat.school.life.user.management.domain.query.FindUserAccountQuery;
 import amb.mat.school.life.user.management.domain.query.IsOwnedByQuery;
+
+import java.util.Optional;
 
 public interface UserAccountService {
 
@@ -32,7 +35,16 @@ public interface UserAccountService {
     /**
      * Indicate if the user identified by username is owned by the specified owner
      *
+     * @param query the {@link IsOwnedByQuery} to use
      * @return {@code true} if the user is owned by the owner, {@code false} otherwise
      */
     boolean isOwnedBy(IsOwnedByQuery query);
+
+    /**
+     * Find a user account identified by the specified username
+     *
+     * @param query the {@link FindUserAccountQuery} to use
+     * @return the user account found, empty otherwise
+     */
+    Optional<UserAccount> find(FindUserAccountQuery query);
 }

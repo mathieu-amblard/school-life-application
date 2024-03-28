@@ -8,22 +8,22 @@ import java.util.Optional;
 
 public class UserAccountRepositoryAdapter implements UserAccountRepository {
 
-    private final UserJdbcRepository userJdbcRepository;
-    private final UserEntityMapper userEntityMapper;
+    private final UserAccountJdbcRepository userAccountJdbcRepository;
+    private final UserAccountEntityMapper userAccountEntityMapper;
 
-    public UserAccountRepositoryAdapter(UserJdbcRepository userJdbcRepository, UserEntityMapper userEntityMapper) {
-        this.userJdbcRepository = userJdbcRepository;
-        this.userEntityMapper = userEntityMapper;
+    public UserAccountRepositoryAdapter(UserAccountJdbcRepository userAccountJdbcRepository, UserAccountEntityMapper userAccountEntityMapper) {
+        this.userAccountJdbcRepository = userAccountJdbcRepository;
+        this.userAccountEntityMapper = userAccountEntityMapper;
     }
 
     @Override
     public boolean existsOwnerRelationship(Username username, Username owner) {
-        return userJdbcRepository.existsByUsernameAndOwner(username.value(), owner.value());
+        return userAccountJdbcRepository.existsByUsernameAndOwner(username.value(), owner.value());
     }
 
     @Override
     public Optional<UserAccount> findByUserName(Username username) {
-        return userJdbcRepository.findById(username.value())
-                .map(userEntityMapper::mapToDomain);
+        return userAccountJdbcRepository.findById(username.value())
+                .map(userAccountEntityMapper::mapToDomain);
     }
 }

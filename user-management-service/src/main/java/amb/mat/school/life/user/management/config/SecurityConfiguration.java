@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -26,13 +27,14 @@ import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     @Bean
     JdbcUserDetailsManager userDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        manager.setUsersByUsernameQuery("select username,password,true from users where username = ?");
-        manager.setAuthoritiesByUsernameQuery("select username,authority from authorities where username = ?");
+        manager.setUsersByUsernameQuery("select username,password,true from user_account where username = ?");
+        manager.setAuthoritiesByUsernameQuery("select username,role from user_account_roles where username = ?");
         return manager;
     }
 

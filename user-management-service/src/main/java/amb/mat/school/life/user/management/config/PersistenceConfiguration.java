@@ -2,28 +2,28 @@ package amb.mat.school.life.user.management.config;
 
 import amb.mat.school.life.user.management.domain.UserAccountRepository;
 import amb.mat.school.life.user.management.persistence.UserAccountServiceAdapter;
+import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntity;
+import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntityMapper;
+import amb.mat.school.life.user.management.persistence.jdbc.UserAccountJdbcRepository;
 import amb.mat.school.life.user.management.persistence.jdbc.UserAccountRepositoryAdapter;
-import amb.mat.school.life.user.management.persistence.jdbc.UserEntity;
-import amb.mat.school.life.user.management.persistence.jdbc.UserEntityMapper;
-import amb.mat.school.life.user.management.persistence.jdbc.UserJdbcRepository;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @Configuration(proxyBeanMethods = false)
-@EntityScan(basePackageClasses = UserEntity.class)
-@EnableJdbcRepositories(basePackageClasses = UserJdbcRepository.class)
+@EntityScan(basePackageClasses = UserAccountEntity.class)
+@EnableJdbcRepositories(basePackageClasses = UserAccountJdbcRepository.class)
 public class PersistenceConfiguration {
 
     @Bean
-    UserEntityMapper userEntityMapper() {
-        return new UserEntityMapper();
+    UserAccountEntityMapper userEntityMapper() {
+        return new UserAccountEntityMapper();
     }
 
     @Bean
-    UserAccountRepositoryAdapter userAccountRepository(UserJdbcRepository userJdbcRepository, UserEntityMapper userEntityMapper) {
-        return new UserAccountRepositoryAdapter(userJdbcRepository, userEntityMapper);
+    UserAccountRepositoryAdapter userAccountRepository(UserAccountJdbcRepository userAccountJdbcRepository, UserAccountEntityMapper userAccountEntityMapper) {
+        return new UserAccountRepositoryAdapter(userAccountJdbcRepository, userAccountEntityMapper);
     }
 
     @Bean
