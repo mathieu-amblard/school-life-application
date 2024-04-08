@@ -4,12 +4,14 @@ import amb.mat.school.life.user.management.domain.UserAccount;
 import amb.mat.school.life.user.management.domain.UserAccountRepository;
 import amb.mat.school.life.user.management.domain.UserAccountService;
 import amb.mat.school.life.user.management.domain.Username;
+import amb.mat.school.life.user.management.domain.command.CreateUserAccountCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserAccountQuery;
 import amb.mat.school.life.user.management.domain.query.IsOwnedByQuery;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class UserAccountServiceAdapter implements UserAccountService {
 
@@ -42,5 +44,17 @@ public class UserAccountServiceAdapter implements UserAccountService {
     @Transactional(readOnly = true)
     public Optional<UserAccount> find(FindUserAccountQuery query) {
         return userAccountRepository.findByUserName(query.username());
+    }
+
+    @Override
+    @Transactional
+    public UserAccount createAccount(CreateUserAccountCommand command) {
+        UserAccount userAccount = new UserAccount(
+                command.username(),
+                command.emailAddress(),
+                Set.of(command.role()),
+                command.owner()
+        );
+        return userAccountRepository.put(userAccount);
     }
 }

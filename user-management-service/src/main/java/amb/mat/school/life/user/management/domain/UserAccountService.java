@@ -1,5 +1,6 @@
 package amb.mat.school.life.user.management.domain;
 
+import amb.mat.school.life.user.management.domain.command.CreateUserAccountCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserAccountQuery;
 import amb.mat.school.life.user.management.domain.query.IsOwnedByQuery;
 
@@ -47,4 +48,12 @@ public interface UserAccountService {
      * @return the user account found, empty otherwise
      */
     Optional<UserAccount> find(FindUserAccountQuery query);
+
+    /**
+     * Create a new user account
+     *
+     * @param command the {@link CreateUserAccountCommand} to use
+     * @return the {@link UserAccount} created
+     */
+    UserAccount createAccount(CreateUserAccountCommand command);
 }

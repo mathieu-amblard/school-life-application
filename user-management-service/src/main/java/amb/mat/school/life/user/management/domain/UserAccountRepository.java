@@ -20,4 +20,12 @@ public interface UserAccountRepository {
      * @return the {@link UserAccount} found, empty otherwise
      */
     Optional<UserAccount> findByUserName(Username username);
+
+    /**
+     * Put the user account into the repository
+     *
+     * @param userAccount the {@link UserAccount} to put
+     * @return the {@link UserAccount} put
+     */
+    UserAccount put(UserAccount userAccount);
 }

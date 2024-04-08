@@ -1,6 +1,6 @@
 package amb.mat.school.life.user.management.domain;
 
-import java.util.List;
+import java.util.Set;
 
 // TODO record ?
 
@@ -15,10 +15,10 @@ public class UserAccount {
 
     private final Username username;
     private final EmailAddress emailAddress;
-    private final List<Role> roles;
+    private final Set<Role> roles;
     private final Username owner;
 
-    public UserAccount(Username username, EmailAddress emailAddress, List<Role> roles, Username owner) {
+    public UserAccount(Username username, EmailAddress emailAddress, Set<Role> roles, Username owner) {
         checkUsernameMandatory(username);
         checkEmailAddressMandatory(emailAddress);
         checkRoleCompatibility(roles);
@@ -40,7 +40,7 @@ public class UserAccount {
         }
     }
 
-    private void checkRoleCompatibility(List<Role> roles) {
+    private void checkRoleCompatibility(Set<Role> roles) {
         if (roles.stream().anyMatch(role -> !role.isCompatibleWith(roles))) {
             throw new IllegalArgumentException("%s are incompatible".formatted(roles));
         }
@@ -54,7 +54,11 @@ public class UserAccount {
         return emailAddress;
     }
 
-    public List<Role> roles() {
+    public Set<Role> roles() {
         return roles;
+    }
+
+    public Username owner() {
+        return owner;
     }
 }

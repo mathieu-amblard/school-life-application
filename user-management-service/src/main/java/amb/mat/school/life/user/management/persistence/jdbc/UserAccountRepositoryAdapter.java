@@ -26,4 +26,11 @@ public class UserAccountRepositoryAdapter implements UserAccountRepository {
         return userAccountJdbcRepository.findById(username.value())
                 .map(userAccountEntityMapper::mapToDomain);
     }
+
+    @Override
+    public UserAccount put(UserAccount userAccount) {
+        UserAccountEntity userAccountEntity = userAccountEntityMapper.mapToEntity(userAccount);
+        userAccountJdbcRepository.save(userAccountEntity);
+        return userAccountEntityMapper.mapToDomain(userAccountEntity);
+    }
 }

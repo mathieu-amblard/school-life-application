@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.Set;
 
 /**
- * No constraint on entities, business rules must be in the domain
+ * No specific constraints on entities, business rules must be in the domain
  */
 @Table("user_account")
 public record UserAccountEntity(

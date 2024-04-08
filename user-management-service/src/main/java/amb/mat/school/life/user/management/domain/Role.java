@@ -1,18 +1,18 @@
 package amb.mat.school.life.user.management.domain;
 
-import java.util.List;
+import java.util.Collection;
 
 public enum Role {
     ADMIN {
         @Override
-        public boolean isCompatibleWith(List<Role> roles) {
+        public boolean isCompatibleWith(Collection<Role> roles) {
             return !roles.contains(STUDENT);
         }
     },
     TEACHER,
     STUDENT;
 
-    public boolean isCompatibleWith(List<Role> roles) {
+    public boolean isCompatibleWith(Collection<Role> roles) {
         return true;
     }
 
