@@ -1,5 +1,7 @@
 package amb.mat.school.life.user.management.domain;
 
+import java.util.regex.Pattern;
+
 /**
  * Business Rules :
  * - The username is mandatory.
@@ -11,7 +13,7 @@ public record Username(String value) {
 
     private static final int MIN_LENGTH = 5;
     private static final int MAX_LENGTH = 30;
-    private static final String VALID_CHARACTERS_REGEX = "\\w*";
+    private static final Pattern VALID_CHARACTERS_REGEX = Pattern.compile("\\w*");
 
     public Username {
         checkMandatory(value);
@@ -39,7 +41,7 @@ public record Username(String value) {
     }
 
     private void checkContainsAlphanumericAndUnderscores(String value) {
-        if (value != null && !value.matches(VALID_CHARACTERS_REGEX)) {
+        if (value != null && !VALID_CHARACTERS_REGEX.matcher(value).matches()) {
             throw new IllegalArgumentException("value must contain alphanumeric characters and underscores only");
         }
     }

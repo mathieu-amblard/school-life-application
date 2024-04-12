@@ -2,10 +2,9 @@ package amb.mat.school.life.user.management.controller.dto;
 
 import java.util.Set;
 
-public record CreateUserAccountCommandDto(
-        String username,
-        String emailAddress,
+public record PutUserAccountCommandDto(
         String password,
+        String emailAddress,
         Set<String> roles
 ) {
 }

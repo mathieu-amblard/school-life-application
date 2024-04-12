@@ -1,6 +1,7 @@
 package amb.mat.school.life.user.management.domain.command;
 
 import amb.mat.school.life.user.management.domain.EmailAddress;
+import amb.mat.school.life.user.management.domain.Password;
 import amb.mat.school.life.user.management.domain.Role;
 import amb.mat.school.life.user.management.domain.Username;
 
@@ -10,12 +11,14 @@ import java.util.Set;
  * Command used to create a new user account
  *
  * @param username
+ * @param password
  * @param emailAddress
  * @param roles
  * @param owner
  */
 public record CreateUserAccountCommand(
         Username username,
+        Password password,
         EmailAddress emailAddress,
         Set<Role> roles,
         Username owner
@@ -25,6 +28,7 @@ public record CreateUserAccountCommand(
 
     public CreateUserAccountCommand {
         checkUsernameMandatory(username);
+        checkPasswordMandatory(password);
         checkEmailAddressMandatory(emailAddress);
         checkRolesMandatory(roles);
         checkRolesNotContainAdmin(roles);
@@ -34,6 +38,12 @@ public record CreateUserAccountCommand(
     private void checkUsernameMandatory(Username username) {
         if (username == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the username is required"));
+        }
+    }
+
+    private void checkPasswordMandatory(Password password) {
+        if (password == null) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the password is required"));
         }
     }
 

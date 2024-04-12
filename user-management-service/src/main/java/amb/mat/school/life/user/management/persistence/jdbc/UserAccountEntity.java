@@ -9,13 +9,14 @@ import java.util.Set;
 /**
  * No specific constraints on entities, business rules must be in the domain
  */
-@Table("user_account")
+@Table("user_accounts")
 public record UserAccountEntity(
-        @Id String username,
+        @Id Long id,
+        String username,
+        String password,
         String emailAddress,
-        @MappedCollection(idColumn = "username", keyColumn = "role")
+        @MappedCollection(idColumn = "user_account_id")
         Set<UserAccountRoleEntity> roles,
-        @MappedCollection(idColumn = "username")
-        UserAccountOwnerEntity owner
+        String owner
 ) {
 }

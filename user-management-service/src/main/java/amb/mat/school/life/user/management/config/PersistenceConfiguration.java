@@ -1,6 +1,8 @@
 package amb.mat.school.life.user.management.config;
 
+import amb.mat.school.life.user.management.domain.PasswordEncoder;
 import amb.mat.school.life.user.management.domain.UserAccountRepository;
+import amb.mat.school.life.user.management.persistence.PasswordEncoderAdapter;
 import amb.mat.school.life.user.management.persistence.UserAccountServiceAdapter;
 import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntity;
 import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntityMapper;
@@ -22,12 +24,20 @@ public class PersistenceConfiguration {
     }
 
     @Bean
-    UserAccountRepositoryAdapter userAccountRepository(UserAccountJdbcRepository userAccountJdbcRepository, UserAccountEntityMapper userAccountEntityMapper) {
+    UserAccountRepositoryAdapter userAccountRepository(
+            UserAccountJdbcRepository userAccountJdbcRepository,
+            UserAccountEntityMapper userAccountEntityMapper
+    ) {
         return new UserAccountRepositoryAdapter(userAccountJdbcRepository, userAccountEntityMapper);
     }
 
     @Bean
-    UserAccountServiceAdapter userAccountService(UserAccountRepository userAccountRepository) {
-        return new UserAccountServiceAdapter(userAccountRepository);
+    PasswordEncoderAdapter passwordEncoder() {
+        return new PasswordEncoderAdapter();
+    }
+
+    @Bean
+    UserAccountServiceAdapter userAccountService(UserAccountRepository userAccountRepository, PasswordEncoder passwordEncoder) {
+        return new UserAccountServiceAdapter(userAccountRepository, passwordEncoder);
     }
 }

@@ -11,7 +11,7 @@ public interface UserAccountRepository {
      * @param owner    the username of the owner
      * @return {@code true} if the relationship exists, {@code false} otherwise
      */
-    boolean existsOwnerRelationship(Username username, Username owner);
+    boolean existsOwnerRelationshipBetween(Username username, Username owner);
 
     /**
      * Find the user account of the specified username
@@ -28,4 +28,13 @@ public interface UserAccountRepository {
      * @return the {@link UserAccount} put
      */
     UserAccount put(UserAccount userAccount);
+
+    /**
+     * Put the user account into the repository and update its password
+     *
+     * @param userAccount the {@link UserAccount} to put
+     * @param password    the {@link Password} to update
+     * @return the {@link UserAccount} put
+     */
+    UserAccount put(UserAccount userAccount, EncodedPassword password);
 }

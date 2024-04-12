@@ -1,11 +1,8 @@
 package amb.mat.school.life.user.management.controller;
 
-import amb.mat.school.life.user.management.controller.dto.CreateUserAccountCommandDto;
+import amb.mat.school.life.user.management.controller.dto.PutUserAccountCommandDto;
 import amb.mat.school.life.user.management.controller.dto.UserAccountDto;
-import amb.mat.school.life.user.management.domain.EmailAddress;
-import amb.mat.school.life.user.management.domain.Role;
-import amb.mat.school.life.user.management.domain.UserAccountService;
-import amb.mat.school.life.user.management.domain.Username;
+import amb.mat.school.life.user.management.domain.*;
 import amb.mat.school.life.user.management.domain.command.CreateUserAccountCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserAccountQuery;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,16 +42,27 @@ public class UserAccountController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createAccount(@RequestBody CreateUserAccountCommandDto commandDto) {
-        CreateUserAccountCommand command = new CreateUserAccountCommand(
-                new Username(commandDto.username()),
-                new EmailAddress(commandDto.emailAddress()),
-                commandDto.roles().stream().map(Role::of).collect(Collectors.toSet()),
-                new Username(SecurityContextHolder.getContext().getAuthentication().getName())
-        );
-        // TODO -> continue + manage password
+    // TODO manage role
+    // admin can create teacher and students
+    // teacher can create admin only
+    @PutMapping("/{username}")
+    // @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    public ResponseEntity<Void> putAccount(@PathVariable String username, @RequestBody PutUserAccountCommandDto commandDto) {
+        if (userAccountService.find(new FindUserAccountQuery(new Username(username))).isPresent()) {
+            CreateUserAccountCommand command = new CreateUserAccountCommand(
+                    new Username(username),
+                    new Password(commandDto.password()),
+                    new EmailAddress(commandDto.emailAddress()),
+                    commandDto.roles().stream().map(Role::of).collect(Collectors.toSet()),
+                    new Username(SecurityContextHolder.getContext().getAuthentication().getName())
+            );
+            userAccountService.createAccount(command);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            // TODO cannot update roles
+            // TODO only the owner or the user itself can update an account
+            // Put @PreAuthorize on the service ?
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
     }
 }
