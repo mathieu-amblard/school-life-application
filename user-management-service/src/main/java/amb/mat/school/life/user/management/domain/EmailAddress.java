@@ -24,7 +24,7 @@ public record EmailAddress(String value) {
 
     private void checkValid(String value) {
         if (value != null && !value.matches(EMAIL_REGEX)) {
-            throw new IllegalArgumentException("value must be a valid email address");
+            throw new IllegalArgumentException("value %s must be a valid email address".formatted(value));
         }
     }
 }

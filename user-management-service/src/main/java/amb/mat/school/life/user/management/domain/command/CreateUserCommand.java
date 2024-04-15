@@ -8,7 +8,7 @@ import amb.mat.school.life.user.management.domain.Username;
 import java.util.Set;
 
 /**
- * Command used to create a new user account
+ * Command used to create a new user
  *
  * @param username
  * @param password
@@ -16,7 +16,7 @@ import java.util.Set;
  * @param roles
  * @param owner
  */
-public record CreateUserAccountCommand(
+public record CreateUserCommand(
         Username username,
         Password password,
         EmailAddress emailAddress,
@@ -24,9 +24,9 @@ public record CreateUserAccountCommand(
         Username owner
 ) {
 
-    private static final String ERROR_MESSAGE_TEMPLATE = "to create a new user account, %s";
+    private static final String ERROR_MESSAGE_TEMPLATE = "to create a new user, %s";
 
-    public CreateUserAccountCommand {
+    public CreateUserCommand {
         checkUsernameMandatory(username);
         checkPasswordMandatory(password);
         checkEmailAddressMandatory(emailAddress);

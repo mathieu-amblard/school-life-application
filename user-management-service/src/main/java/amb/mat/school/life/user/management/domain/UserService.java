@@ -1,12 +1,13 @@
 package amb.mat.school.life.user.management.domain;
 
-import amb.mat.school.life.user.management.domain.command.CreateUserAccountCommand;
-import amb.mat.school.life.user.management.domain.query.FindUserAccountQuery;
+import amb.mat.school.life.user.management.domain.command.CreateUserCommand;
+import amb.mat.school.life.user.management.domain.command.UpdateUserCommand;
+import amb.mat.school.life.user.management.domain.query.FindUserQuery;
 import amb.mat.school.life.user.management.domain.query.IsOwnedByQuery;
 
 import java.util.Optional;
 
-public interface UserAccountService {
+public interface UserService {
 
     /**
      * Get the {@link Username} of the connected user
@@ -16,11 +17,11 @@ public interface UserAccountService {
     Username getMyUsername();
 
     /**
-     * Get the {@link UserAccount} of the connected user
+     * Get the {@link User} of the connected user
      *
-     * @return the {@link UserAccount} of the connected user
+     * @return the {@link User} of the connected user
      */
-    UserAccount getMyAccount();
+    User getMyUser();
 
     /**
      * Indicate if the user identified by username is owned by the specified owner
@@ -42,18 +43,26 @@ public interface UserAccountService {
     boolean isOwnedBy(IsOwnedByQuery query);
 
     /**
-     * Find a user account identified by the specified username
+     * Find a user identified by the specified username
      *
-     * @param query the {@link FindUserAccountQuery} to use
-     * @return the user account found, empty otherwise
+     * @param query the {@link FindUserQuery} to use
+     * @return the user found, empty otherwise
      */
-    Optional<UserAccount> find(FindUserAccountQuery query);
+    Optional<User> find(FindUserQuery query);
 
     /**
-     * Create a new user account
+     * Create a new user
      *
-     * @param command the {@link CreateUserAccountCommand} to use
-     * @return the {@link UserAccount} created
+     * @param command the {@link CreateUserCommand} to use
+     * @return the {@link User} created
      */
-    UserAccount createAccount(CreateUserAccountCommand command);
+    User createUser(CreateUserCommand command);
+
+    /**
+     * Update an existing user
+     *
+     * @param command the {@link UpdateUserCommand} to use
+     * @return the {@link User} updated
+     */
+    User updateUser(UpdateUserCommand command);
 }

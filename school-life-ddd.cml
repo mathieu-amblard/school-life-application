@@ -131,7 +131,7 @@ BoundedContext StudentContext implements StudentDomain {
 			- UserAccount userAccount
 			String lastname
 			String firstname
-			Date dateOfBirth
+			Date birthdate
 		}
 
 		ValueObject StudentId {
@@ -142,7 +142,7 @@ BoundedContext StudentContext implements StudentDomain {
 
 BoundedContext UserManagementContext implements UserManagementDomain {
 	type = APPLICATION
-	domainVisionStatement = "This bounded context allows administrators to manage user accounts, users (i.e. students and teachers) to sign in."
+	domainVisionStatement = "This bounded context allows administrators to manage users, and existing users (i.e. students and teachers) to sign in."
 	responsibilities = "Authentication, Authorization"
 	implementationTechnology = "Java, Spring Boot, OAuth2 Server"
 	knowledgeLevel = CONCRETE

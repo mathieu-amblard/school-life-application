@@ -1,6 +1,6 @@
 package amb.mat.school.life.user.management.config;
 
-import amb.mat.school.life.user.management.controller.UserAccountDtoMapper;
+import amb.mat.school.life.user.management.controller.UserDtoMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +16,7 @@ public class ControllerConfiguration {
      * The goal is really to simplify the testing strategy and put some simple rules on top of it.
      */
     @Bean
-    UserAccountDtoMapper userAccountDtoMapper() {
-        return new UserAccountDtoMapper();
+    UserDtoMapper userDtoMapper() {
+        return new UserDtoMapper();
     }
 }

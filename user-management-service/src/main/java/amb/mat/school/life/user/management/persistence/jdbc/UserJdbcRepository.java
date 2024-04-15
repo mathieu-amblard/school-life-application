@@ -4,9 +4,9 @@ import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.Optional;
 
-public interface UserAccountJdbcRepository extends ListCrudRepository<UserAccountEntity, Long> {
+public interface UserJdbcRepository extends ListCrudRepository<UserEntity, Long> {
 
-    Optional<UserAccountEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 
     boolean existsByUsernameAndOwner(String username, String owner);
 }

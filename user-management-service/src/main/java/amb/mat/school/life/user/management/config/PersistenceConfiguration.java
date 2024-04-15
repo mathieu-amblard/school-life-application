@@ -1,34 +1,34 @@
 package amb.mat.school.life.user.management.config;
 
 import amb.mat.school.life.user.management.domain.PasswordEncoder;
-import amb.mat.school.life.user.management.domain.UserAccountRepository;
+import amb.mat.school.life.user.management.domain.UserRepository;
 import amb.mat.school.life.user.management.persistence.PasswordEncoderAdapter;
-import amb.mat.school.life.user.management.persistence.UserAccountServiceAdapter;
-import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntity;
-import amb.mat.school.life.user.management.persistence.jdbc.UserAccountEntityMapper;
-import amb.mat.school.life.user.management.persistence.jdbc.UserAccountJdbcRepository;
-import amb.mat.school.life.user.management.persistence.jdbc.UserAccountRepositoryAdapter;
+import amb.mat.school.life.user.management.persistence.UserServiceAdapter;
+import amb.mat.school.life.user.management.persistence.jdbc.UserEntity;
+import amb.mat.school.life.user.management.persistence.jdbc.UserEntityMapper;
+import amb.mat.school.life.user.management.persistence.jdbc.UserJdbcRepository;
+import amb.mat.school.life.user.management.persistence.jdbc.UserRepositoryAdapter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @Configuration(proxyBeanMethods = false)
-@EntityScan(basePackageClasses = UserAccountEntity.class)
-@EnableJdbcRepositories(basePackageClasses = UserAccountJdbcRepository.class)
+@EntityScan(basePackageClasses = UserEntity.class)
+@EnableJdbcRepositories(basePackageClasses = UserJdbcRepository.class)
 public class PersistenceConfiguration {
 
     @Bean
-    UserAccountEntityMapper userEntityMapper() {
-        return new UserAccountEntityMapper();
+    UserEntityMapper userEntityMapper() {
+        return new UserEntityMapper();
     }
 
     @Bean
-    UserAccountRepositoryAdapter userAccountRepository(
-            UserAccountJdbcRepository userAccountJdbcRepository,
-            UserAccountEntityMapper userAccountEntityMapper
+    UserRepositoryAdapter userRepository(
+            UserJdbcRepository userJdbcRepository,
+            UserEntityMapper userEntityMapper
     ) {
-        return new UserAccountRepositoryAdapter(userAccountJdbcRepository, userAccountEntityMapper);
+        return new UserRepositoryAdapter(userJdbcRepository, userEntityMapper);
     }
 
     @Bean
@@ -37,7 +37,7 @@ public class PersistenceConfiguration {
     }
 
     @Bean
-    UserAccountServiceAdapter userAccountService(UserAccountRepository userAccountRepository, PasswordEncoder passwordEncoder) {
-        return new UserAccountServiceAdapter(userAccountRepository, passwordEncoder);
+    UserServiceAdapter userService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return new UserServiceAdapter(userRepository, passwordEncoder);
     }
 }

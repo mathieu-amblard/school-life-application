@@ -8,17 +8,17 @@ import java.util.Set;
  * Business Rules :
  * - The username is mandatory.
  * - The email address is mandatory.
- * - The account must have at least one role.
+ * - The user must have at least one role.
  * - ADMIN role is not compatible with STUDENT.
  */
-public class UserAccount {
+public class User {
 
     private final Username username;
-    private final EmailAddress emailAddress;
+    private EmailAddress emailAddress;
     private final Set<Role> roles;
     private final Username owner;
 
-    public UserAccount(Username username, EmailAddress emailAddress, Set<Role> roles, Username owner) {
+    public User(Username username, EmailAddress emailAddress, Set<Role> roles, Username owner) {
         checkUsernameMandatory(username);
         checkEmailAddressMandatory(emailAddress);
         checkRoleCompatibility(roles);
@@ -52,6 +52,10 @@ public class UserAccount {
 
     public EmailAddress emailAddress() {
         return emailAddress;
+    }
+
+    public void updateEmailAddress(EmailAddress emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public Set<Role> roles() {
