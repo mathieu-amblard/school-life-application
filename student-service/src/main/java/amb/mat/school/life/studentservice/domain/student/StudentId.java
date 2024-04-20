@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public record StudentId(String value) {
 
+    private static final String UUID_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+
     public StudentId {
         checkStudentIdMandatory(value);
         checkStudentIdFormat(value);
@@ -20,12 +22,8 @@ public record StudentId(String value) {
     }
 
     private void checkStudentIdFormat(String value) {
-        try {
-            if (value != null) {
-                UUID.fromString(value);
-            }
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new IllegalArgumentException("value must be a uuid");
+        if (value != null && !value.matches(UUID_REGEX)) {
+            throw new IllegalArgumentException("value must be a valid uuid");
         }
     }
 }

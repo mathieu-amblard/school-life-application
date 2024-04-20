@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 /**
  * Business Rules :
+ * - The password is mandatory.
  * - The password consists of 8 to 20 characters inclusive.
  * - The password includes a capital letter.
  * - The password includes at least one lowercase letter.

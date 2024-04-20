@@ -2,12 +2,12 @@ package amb.mat.school.life.user.management.persistence;
 
 import amb.mat.school.life.user.management.domain.EncodedPassword;
 import amb.mat.school.life.user.management.domain.Password;
-import amb.mat.school.life.user.management.domain.PasswordEncoder;
+import amb.mat.school.life.user.management.domain.PasswordEncoderPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.regex.Pattern;
 
-public class PasswordEncoderAdapter implements PasswordEncoder {
+public class PasswordEncoderAdapter implements PasswordEncoderPort {
 
     private static final String BRCYPT_FORMAT = "{bcrypt}%s";
     private static final Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2(a|y|b)?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");

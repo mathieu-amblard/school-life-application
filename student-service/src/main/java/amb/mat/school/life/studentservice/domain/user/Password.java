@@ -2,13 +2,13 @@ package amb.mat.school.life.studentservice.domain.user;
 
 /**
  * Business Rules :
- * - The username is mandatory.
+ * - The password is mandatory.
  * <p>
  * NB : It is not the responsibility of the student-service to validate the username format.
  */
-public record Username(String value) {
+public record Password(String value) {
 
-    public Username {
+    public Password {
         checkMandatory(value);
     }
 

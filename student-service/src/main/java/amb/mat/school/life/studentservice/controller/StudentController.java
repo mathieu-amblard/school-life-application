@@ -21,7 +21,7 @@ public class StudentController {
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody CreateStudentCommand command) {
+    public void create(@RequestBody PutStudentCommandDto command) {
         System.out.println("I have been called with command " + command);
     }
 }

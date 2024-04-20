@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 
 import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepositoryPort {
 
     /**
      * Indicate if an owner relationship exists between the specified user and owner
@@ -28,7 +28,6 @@ public interface UserRepository {
      *
      * @param user     the {@link User} to put
      * @param password the {@link Password} to update
-     * @return the {@link User} put
      */
-    User put(User user, @Nullable EncodedPassword password);
+    void put(User user, @Nullable EncodedPassword password);
 }
