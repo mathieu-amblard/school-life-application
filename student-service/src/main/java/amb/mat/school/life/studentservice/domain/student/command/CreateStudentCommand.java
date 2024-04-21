@@ -1,46 +1,47 @@
 package amb.mat.school.life.studentservice.domain.student.command;
 
+import amb.mat.school.life.studentservice.domain.student.Birthdate;
 import amb.mat.school.life.studentservice.domain.student.Firstname;
 import amb.mat.school.life.studentservice.domain.student.Lastname;
 import amb.mat.school.life.studentservice.domain.user.Username;
-
-import java.time.LocalDate;
 
 public record CreateStudentCommand(
         Username username,
         Lastname lastname,
         Firstname firstname,
-        LocalDate birthdate
+        Birthdate birthdate
 ) {
+
+    private static final String ERROR_MESSAGE_TEMPLATE = "to create a new student, %s";
 
     public CreateStudentCommand {
         checkUsernameMandatory(username);
-        checkLastnameMandatory(lastname);
-        checkFirstnameMandatory(firstname);
-        checkBirthdateMandatory(birthdate);
+        checkLastname(lastname);
+        checkFirstname(firstname);
+        checkBirthdate(birthdate);
     }
 
     private void checkUsernameMandatory(Username username) {
         if (username == null) {
-            throw new IllegalArgumentException("username must not be null");
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the username is required"));
         }
     }
 
-    private void checkLastnameMandatory(Lastname lastname) {
-        if (lastname == null) {
-            throw new IllegalArgumentException("lastname must not be null");
+    private void checkLastname(Lastname username) {
+        if (username == null) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the lastname is required"));
         }
     }
 
-    private void checkFirstnameMandatory(Firstname firstname) {
-        if (firstname == null) {
-            throw new IllegalArgumentException("firstname must not be null");
+    private void checkFirstname(Firstname username) {
+        if (username == null) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the firstname is required"));
         }
     }
 
-    private void checkBirthdateMandatory(LocalDate birthdate) {
-        if (birthdate == null) {
-            throw new IllegalArgumentException("birthdate must not be null");
+    private void checkBirthdate(Birthdate username) {
+        if (username == null) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the birthdate is required"));
         }
     }
 }

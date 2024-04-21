@@ -1,6 +1,7 @@
 package amb.mat.school.life.studentservice.domain.student;
 
 import amb.mat.school.life.studentservice.domain.student.command.CreateStudentCommand;
+import amb.mat.school.life.studentservice.domain.student.command.DeleteStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,10 +9,10 @@ import java.util.NoSuchElementException;
 
 public class StudentService {
 
-    private final StudentRepository studentRepository;
+    private final StudentRepositoryPort studentRepositoryPort;
 
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentService(StudentRepositoryPort studentRepositoryPort) {
+        this.studentRepositoryPort = studentRepositoryPort;
     }
 
     /**
@@ -20,9 +21,10 @@ public class StudentService {
      * @param command the {@link CreateStudentCommand} to use
      */
     @Transactional
-    public void createStudent(CreateStudentCommand command) {
+    public Student createStudent(CreateStudentCommand command) {
         Student student = new Student(command);
-        studentRepository.put(student);
+        studentRepositoryPort.put(student);
+        return student;
     }
 
     /**
@@ -32,10 +34,15 @@ public class StudentService {
      */
     @Transactional
     public void updateStudent(UpdateStudentCommand command) {
-        Student student = studentRepository.findByStudentId(command.studentId())
+        Student student = studentRepositoryPort.get(command.studentId())
                 .orElseThrow(() -> new NoSuchElementException("student not found with identifier %s".formatted(command.studentId().value())));
         if (student.updateInformation(command)) {
-            studentRepository.put(student);
+            studentRepositoryPort.put(student);
         }
+    }
+
+    @Transactional
+    public void deleteStudent(DeleteStudentCommand command) {
+
     }
 }

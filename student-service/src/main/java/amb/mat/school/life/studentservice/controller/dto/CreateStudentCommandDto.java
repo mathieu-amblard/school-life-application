@@ -1,8 +1,8 @@
-package amb.mat.school.life.studentservice.controller;
+package amb.mat.school.life.studentservice.controller.dto;
 
 import java.time.LocalDate;
 
-public record PutStudentCommandDto(
+public record CreateStudentCommandDto(
         String username,
         String password,
         String emailAddress,

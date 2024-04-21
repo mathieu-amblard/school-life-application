@@ -1,6 +1,10 @@
 package amb.mat.school.life.studentservice.domain.user;
 
+import java.util.Optional;
+
 public interface UserRepositoryPort {
 
-    void putUser(User user, Password password);
+    Optional<User> get(Username username);
+
+    void put(User user, Password password);
 }

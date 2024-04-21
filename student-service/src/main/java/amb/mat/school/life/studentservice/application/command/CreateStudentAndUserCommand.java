@@ -7,7 +7,7 @@ import amb.mat.school.life.studentservice.domain.user.EmailAddress;
 import amb.mat.school.life.studentservice.domain.user.Password;
 import amb.mat.school.life.studentservice.domain.user.Username;
 
-public record CreateStudentCommand(
+public record CreateStudentAndUserCommand(
         Username username,
         Password password,
         EmailAddress emailAddress,
@@ -18,7 +18,7 @@ public record CreateStudentCommand(
 
     private static final String ERROR_MESSAGE_TEMPLATE = "to create a new student, %s";
 
-    public CreateStudentCommand {
+    public CreateStudentAndUserCommand {
         checkUsernameMandatory(username);
         checkPasswordMandatory(password);
         checkEmailAddressMandatory(emailAddress);

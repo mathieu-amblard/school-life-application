@@ -1,4 +1,4 @@
-package amb.mat.school.life.user.management.persistence.jdbc;
+package amb.mat.school.life.user.management.persistence;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;

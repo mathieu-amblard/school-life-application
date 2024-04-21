@@ -6,7 +6,6 @@ import amb.mat.school.life.studentservice.domain.student.command.CreateStudentCo
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
 import amb.mat.school.life.studentservice.domain.user.Username;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,9 +23,9 @@ public class Student {
     private final Username username; // referenced the user by its username to have a loosely coupling
     private Lastname lastname;
     private Firstname firstname;
-    private LocalDate birthdate;
+    private Birthdate birthdate;
 
-    public Student(StudentId studentId, Username username, Lastname lastname, Firstname firstname, LocalDate birthdate) {
+    public Student(StudentId studentId, Username username, Lastname lastname, Firstname firstname, Birthdate birthdate) {
         checkStudentIdMandatory(studentId);
         checkUsernameMandatory(username);
         checkLastnameMandatory(lastname);
@@ -78,10 +77,30 @@ public class Student {
         }
     }
 
-    private void checkBirthdateMandatory(LocalDate birthdate) {
+    private void checkBirthdateMandatory(Birthdate birthdate) {
         if (birthdate == null) {
             throw new IllegalArgumentException("birthdate must not be null");
         }
+    }
+
+    public StudentId studentId() {
+        return studentId;
+    }
+
+    public Username username() {
+        return username;
+    }
+
+    public Lastname lastname() {
+        return lastname;
+    }
+
+    public Firstname firstname() {
+        return firstname;
+    }
+
+    public Birthdate birthdate() {
+        return birthdate;
     }
 
     /**

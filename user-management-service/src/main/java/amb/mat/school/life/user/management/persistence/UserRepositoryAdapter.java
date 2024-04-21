@@ -1,4 +1,4 @@
-package amb.mat.school.life.user.management.persistence.jdbc;
+package amb.mat.school.life.user.management.persistence;
 
 import amb.mat.school.life.user.management.domain.EncodedPassword;
 import amb.mat.school.life.user.management.domain.User;
@@ -35,6 +35,5 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                 .orElse(null);
         UserEntity userEntity = userEntityMapper.mapToEntity(id, user, encodedPassword);
         userJdbcRepository.save(userEntity);
-        userEntityMapper.mapToDomain(userEntity);
     }
 }

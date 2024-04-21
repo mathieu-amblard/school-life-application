@@ -1,10 +1,6 @@
 package amb.mat.school.life.user.management.config;
 
-import amb.mat.school.life.user.management.persistence.PasswordEncoderAdapter;
-import amb.mat.school.life.user.management.persistence.jdbc.UserEntity;
-import amb.mat.school.life.user.management.persistence.jdbc.UserEntityMapper;
-import amb.mat.school.life.user.management.persistence.jdbc.UserJdbcRepository;
-import amb.mat.school.life.user.management.persistence.jdbc.UserRepositoryAdapter;
+import amb.mat.school.life.user.management.persistence.*;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +17,7 @@ public class PersistenceConfiguration {
     }
 
     @Bean
-    UserRepositoryAdapter userRepository(
+    UserRepositoryAdapter userRepositoryAdapter(
             UserJdbcRepository userJdbcRepository,
             UserEntityMapper userEntityMapper
     ) {
@@ -29,7 +25,7 @@ public class PersistenceConfiguration {
     }
 
     @Bean
-    PasswordEncoderAdapter passwordEncoder() {
+    PasswordEncoderAdapter passwordEncoderAdapter() {
         return new PasswordEncoderAdapter();
     }
 }
