@@ -8,7 +8,7 @@ package amb.mat.school.life.studentservice.domain.student;
  */
 public record Firstname(String value) {
 
-    private static final String FIRSTNAME_REGEX = "[A-Z]+([ '-][a-zA-Z]+)*";
+    private static final String FIRSTNAME_REGEX = "[A-Z][A-Za-z '-]*";
 
     public Firstname {
         checkMandatory(value);

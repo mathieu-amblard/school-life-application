@@ -1,0 +1,16 @@
+{
+  "request": {
+    "urlPath": "/api/users/username",
+    "method": "PUT",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"emailAdress\": \"username@student.com\", \"role\": \"STUDENT\" }",
+        "ignoreArrayOrder": true,
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

@@ -17,7 +17,7 @@ public class ClientConfiguration {
     @Bean
     UserClient userClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("app.client.user.url") String url
+            @Value("${app.client.user.url}") String url
     ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(url));

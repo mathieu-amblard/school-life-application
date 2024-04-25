@@ -10,9 +10,12 @@ import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCo
 import amb.mat.school.life.studentservice.domain.user.EmailAddress;
 import amb.mat.school.life.studentservice.domain.user.Password;
 import amb.mat.school.life.studentservice.domain.user.Username;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +26,21 @@ import java.util.Optional;
 @RequestMapping("/api/students")
 public class StudentController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
+
     private final StudentApplicationService studentApplicationService;
 
     public StudentController(StudentApplicationService studentApplicationService) {
         this.studentApplicationService = studentApplicationService;
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping
-    public String get() {
-        System.out.println("I have been called with user " + ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaims());
-        System.out.println("I have been called with user + authorities " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        return "Hello";
+    @PreAuthorize("hasRole('student')")
+    @GetMapping("/whoami")
+    public String getWhoami() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        LOG.info("I have been called with user {} and authorities {}", principal.getSubject(), authentication.getAuthorities());
+        return principal.getSubject();
     }
 
     @PreAuthorize("hasRole('admin')")
