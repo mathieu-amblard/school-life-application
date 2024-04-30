@@ -32,7 +32,7 @@ public record Birthdate(LocalDate value) {
 
     private void checkIsUnder18(LocalDate value) {
         if (value != null && value.isBefore(LocalDate.now().minusYears(MAX_AGE))) {
-            throw new IllegalArgumentException("value %s must be a valid email address".formatted(value));
+            throw new IllegalArgumentException("value %s must be a valid date".formatted(value));
         }
     }
 }

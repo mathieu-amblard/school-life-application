@@ -1,6 +1,7 @@
 package amb.mat.school.life.studentservice.controller;
 
 import amb.mat.school.life.studentservice.persistence.StudentEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,10 +20,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
-class StudentControllerTest {
+class StudentControllerIT {
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
@@ -52,6 +57,11 @@ class StudentControllerTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void beforeEach() {
+        jdbcTemplate.execute("DELETE FROM students");
+    }
 
     @Test
     void should_get_whoami() throws Exception {
@@ -106,23 +116,88 @@ class StudentControllerTest {
                                 }
                                 """
                 ));
-        StudentEntity studentEntity = jdbcTemplate.queryForObject(
-                "SELECT * FROM students WHERE username = '%s'".formatted("username"),
-                (rs, rowNum) -> new StudentEntity(
-                        rs.getLong("id"),
-                        rs.getString("student_id"),
-                        rs.getString("username"),
-                        rs.getString("lastname"),
-                        rs.getString("firstname"),
-                        rs.getDate("birthdate").toLocalDate()
-                )
+        Optional<StudentEntity> optStudentEntity = findStudentByUsername("username");
+        assertThat(optStudentEntity)
+                .isPresent()
+                .hasValueSatisfying(studentEntity -> {
+                    assertThat(studentEntity.id()).isPositive();
+                    assertThat(studentEntity.studentId()).isNotBlank();
+                    assertThat(studentEntity.username()).isEqualTo("username");
+                    assertThat(studentEntity.lastname()).isEqualTo("Lastname");
+                    assertThat(studentEntity.firstname()).isEqualTo("Firstname");
+                    assertThat(studentEntity.birthdate()).isEqualTo(LocalDate.of(2021, 10, 23));
+                });
+    }
+
+    @Test
+    void should_patch_existing_student() throws Exception {
+        // Given
+        String username = "username";
+        String studentId = insertStudent(username);
+        // When
+        ResultActions resultActions = mockMvc
+                .perform(patch("/api/students/{studentId}", studentId)
+                        .with(jwt()
+                                .authorities(jwtGrantedAuthoritiesConverter)
+                                .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "admin"))))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                        {
+                                            "lastname": "Shelby",
+                                            "firstname": "Thomas",
+                                            "birthdate": "2018-06-27"
+                                        }
+                                        """
+                        )
+                );
+        // Then
+        resultActions.andExpect(status().isNoContent());
+        Optional<StudentEntity> optStudentEntity = findStudentByUsername(username);
+        assertThat(optStudentEntity)
+                .isPresent()
+                .hasValueSatisfying(studentEntity -> {
+                    assertThat(studentEntity.id()).isPositive();
+                    assertThat(studentEntity.studentId()).isEqualTo(studentId);
+                    assertThat(studentEntity.username()).isEqualTo(username);
+                    assertThat(studentEntity.lastname()).isEqualTo("Shelby");
+                    assertThat(studentEntity.firstname()).isEqualTo("Thomas");
+                    assertThat(studentEntity.birthdate()).isEqualTo(LocalDate.of(2018, 6, 27));
+                });
+    }
+
+    @Test
+    void should_delete_existing_student() throws Exception {
+        // Given
+        String username = "username";
+        String studentId = insertStudent(username);
+        // When
+        ResultActions resultActions = mockMvc
+                .perform(delete("/api/students/{studentId}", studentId)
+                        .with(jwt()
+                                .authorities(jwtGrantedAuthoritiesConverter)
+                                .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "admin"))))
+                );
+        // Then
+        resultActions.andExpect(status().isNoContent());
+        Optional<StudentEntity> studentEntity = findStudentByUsername(username);
+        assertThat(studentEntity).isEmpty();
+    }
+
+    private String insertStudent(String username) {
+        String studentId = UUID.randomUUID().toString();
+        jdbcTemplate.execute("""
+                INSERT INTO students (student_id, username, lastname, firstname, birthdate)
+                VALUES ('%s', '%s', 'Lastname', 'Firstname', '2021-10-23')
+                """.formatted(studentId, username)
         );
-        assertThat(studentEntity).isNotNull();
-        assertThat(studentEntity.id()).isPositive();
-        assertThat(studentEntity.studentId()).isNotBlank();
-        assertThat(studentEntity.username()).isEqualTo("username");
-        assertThat(studentEntity.lastname()).isEqualTo("Lastname");
-        assertThat(studentEntity.firstname()).isEqualTo("Firstname");
-        assertThat(studentEntity.birthdate()).isEqualTo(LocalDate.of(2021, 10, 23));
+        return studentId;
+    }
+
+    private Optional<StudentEntity> findStudentByUsername(String username) {
+        return jdbcTemplate.queryForList(
+                "SELECT * FROM students WHERE username = '%s'".formatted(username),
+                StudentEntity.class
+        ).stream().findFirst();
     }
 }

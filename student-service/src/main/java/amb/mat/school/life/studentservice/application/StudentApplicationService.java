@@ -62,4 +62,8 @@ public class StudentApplicationService {
     public void updateStudent(UpdateStudentCommand command) {
         studentService.updateStudent(command);
     }
+
+    public void deleteStudent(DeleteStudentCommand command) {
+        studentService.deleteStudent(command);
+    }
 }

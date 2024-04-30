@@ -33,6 +33,7 @@ public class StudentRepositoryAdapter implements StudentRepositoryPort {
 
     @Override
     public void remove(StudentId studentId) {
-        studentJdbcRepository.deleteByStudentId(studentId.value());
+        studentJdbcRepository.findByStudentId(studentId.value())
+                .ifPresent(studentJdbcRepository::delete);
     }
 }

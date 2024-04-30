@@ -28,14 +28,14 @@ public class UserController {
         this.userDtoMapper = userDtoMapper;
     }
 
-    @GetMapping("/self")
     @PreAuthorize("isAuthenticated()")
-    public UserDto getMyUser() {
+    @GetMapping("/whoami")
+    public UserDto getWhoAmI() {
         return userDtoMapper.mapToDto(userService.getMyUser());
     }
 
-    @GetMapping("/{username}")
     @PreAuthorize("hasRole('admin') or @userService.isOwnedBy(#username, authentication.name)  or #username == authentication.name")
+    @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUser(@PathVariable String username) {
         return userService.find(new FindUserQuery(new Username(username)))
                 .map(userDtoMapper::mapToDto)
@@ -43,8 +43,8 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{username}") // Idempotency, simplify error handling on consumers (retry for instance)
     @PreAuthorize("hasRole('admin')")
+    @PutMapping("/{username}") // Idempotency, simplify error handling on consumers (retry for instance)
     public ResponseEntity<Void> putUser(@PathVariable String username, @RequestBody PutUserCommandDto commandDto) {
         if (userService.find(new FindUserQuery(new Username(username))).isPresent()) {
             UpdateUserCommand command = new UpdateUserCommand(

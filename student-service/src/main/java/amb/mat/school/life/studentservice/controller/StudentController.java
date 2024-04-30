@@ -3,9 +3,10 @@ package amb.mat.school.life.studentservice.controller;
 import amb.mat.school.life.studentservice.application.StudentApplicationService;
 import amb.mat.school.life.studentservice.application.command.CreateStudentAndUserCommand;
 import amb.mat.school.life.studentservice.controller.dto.CreateStudentCommandDto;
+import amb.mat.school.life.studentservice.controller.dto.PatchStudentCommandDto;
 import amb.mat.school.life.studentservice.controller.dto.StudentDto;
-import amb.mat.school.life.studentservice.controller.dto.UpdatePartiallyStudentCommandDto;
 import amb.mat.school.life.studentservice.domain.student.*;
+import amb.mat.school.life.studentservice.domain.student.command.DeleteStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
 import amb.mat.school.life.studentservice.domain.user.EmailAddress;
 import amb.mat.school.life.studentservice.domain.user.Password;
@@ -36,7 +37,7 @@ public class StudentController {
 
     @PreAuthorize("hasRole('student')")
     @GetMapping("/whoami")
-    public String getWhoami() {
+    public String getWhoAmI() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt principal = (Jwt) authentication.getPrincipal();
         LOG.info("I have been called with user {} and authorities {}", principal.getSubject(), authentication.getAuthorities());
@@ -72,13 +73,20 @@ public class StudentController {
     @PreAuthorize("hasRole('admin')")
     @PatchMapping("/{studentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String studentId, @RequestBody UpdatePartiallyStudentCommandDto command) {
+    public void update(@PathVariable String studentId, @RequestBody PatchStudentCommandDto command) {
         UpdateStudentCommand updateStudentCommand = new UpdateStudentCommand(
                 new StudentId(studentId),
-                Optional.ofNullable(command.firstname()).map(Lastname::new).orElse(null),
+                Optional.ofNullable(command.lastname()).map(Lastname::new).orElse(null),
                 Optional.ofNullable(command.firstname()).map(Firstname::new).orElse(null),
                 Optional.ofNullable(command.birthdate()).map(Birthdate::new).orElse(null)
         );
         studentApplicationService.updateStudent(updateStudentCommand);
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("/{studentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String studentId) {
+        studentApplicationService.deleteStudent(new DeleteStudentCommand(new StudentId(studentId)));
     }
 }

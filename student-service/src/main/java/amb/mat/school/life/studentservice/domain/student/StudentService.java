@@ -43,6 +43,6 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(DeleteStudentCommand command) {
-
+        studentRepositoryPort.remove(command.studentId());
     }
 }
