@@ -1,10 +1,15 @@
 package amb.mat.school.life.studentservice.client;
 
 import amb.mat.school.life.studentservice.domain.user.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 public class UserRepositoryAdapter implements UserRepositoryPort {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     private final UserClient userClient;
 
@@ -15,7 +20,14 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> get(Username username) {
         return Optional.ofNullable(username)
-                .flatMap(name -> userClient.get(name.value()))
+                .map(name -> {
+                    try {
+                        return userClient.get(name.value());
+                    } catch (HttpClientErrorException.NotFound exception) {
+                        LOG.info("user {} not found", username);
+                        return null;
+                    }
+                })
                 .map(userDto -> new User(
                         username,
                         new EmailAddress(userDto.emailAddress())

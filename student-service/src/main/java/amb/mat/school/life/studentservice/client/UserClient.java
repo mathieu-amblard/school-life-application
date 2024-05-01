@@ -6,13 +6,11 @@ import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PutExchange;
 
-import java.util.Optional;
-
 @HttpExchange("/api/users")
 public interface UserClient {
 
     @GetExchange("/{username}")
-    Optional<UserDto> get(@PathVariable String username);
+    UserDto get(@PathVariable String username);
 
     @PutExchange("/{username}")
     void put(@PathVariable String username, @RequestBody UserDto userDto);
