@@ -24,11 +24,10 @@ public class ClientConfiguration {
     ) {
         RestTemplate restTemplate = restTemplateBuilder
                 .additionalInterceptors((request, body, execution) -> {
-                    // TODO find a better way to propagate the token, ideally the Gateway should act as the single entry point
                     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                     if (authentication.isAuthenticated() && authentication instanceof JwtAuthenticationToken authenticationToken) {
                         String tokenValue = authenticationToken.getToken().getTokenValue();
-                        request.getHeaders().add("Authorization", "Bearer " + tokenValue);
+                        request.getHeaders().setBearerAuth(tokenValue);
                     }
                     return execution.execute(request, body);
                 })
