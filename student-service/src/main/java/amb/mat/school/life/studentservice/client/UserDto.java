@@ -11,6 +11,6 @@ public record UserDto(
     public static final String STUDENT_ROLE = "STUDENT";
 
     public UserDto(String emailAddress, String password) {
-        this(password, emailAddress, Set.of(STUDENT_ROLE));
+        this(emailAddress, password, Set.of(STUDENT_ROLE));
     }
 }

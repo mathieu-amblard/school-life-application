@@ -20,7 +20,7 @@ public record UpdateUserCommand(
         EmailAddress emailAddress
 ) {
 
-    private static final String ERROR_MESSAGE_TEMPLATE = "to update a new user, %s";
+    private static final String ERROR_MESSAGE_TEMPLATE = "to update a user, %s";
 
     public UpdateUserCommand {
         checkUsernameMandatory(username);

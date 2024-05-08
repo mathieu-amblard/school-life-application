@@ -1,9 +1,12 @@
 package amb.mat.school.life.studentservice.persistence;
 
+import amb.mat.school.life.studentservice.domain.Identifier;
 import amb.mat.school.life.studentservice.domain.student.Student;
 import amb.mat.school.life.studentservice.domain.student.StudentId;
 import amb.mat.school.life.studentservice.domain.student.StudentRepositoryPort;
+import amb.mat.school.life.studentservice.domain.user.Username;
 
+import java.util.List;
 import java.util.Optional;
 
 public class StudentRepositoryAdapter implements StudentRepositoryPort {
@@ -17,14 +20,21 @@ public class StudentRepositoryAdapter implements StudentRepositoryPort {
     }
 
     @Override
-    public Optional<Student> get(StudentId studentId) {
-        return studentJdbcRepository.findByStudentId(studentId.value())
-                .map(studentEntityMapper::mapToDomain);
+    public List<Student> getAll() {
+        return studentJdbcRepository.findAll()
+                .stream()
+                .map(studentEntityMapper::mapToDomain)
+                .toList();
+    }
+
+    @Override
+    public Optional<Student> get(Identifier identifier) {
+        return getEntity(identifier).map(studentEntityMapper::mapToDomain);
     }
 
     @Override
     public void put(Student student) {
-        Long id = studentJdbcRepository.findByStudentId(student.studentId().value())
+        Long id = getEntity(student.studentId())
                 .map(StudentEntity::id)
                 .orElse(null);
         StudentEntity studentEntity = studentEntityMapper.mapToEntity(id, student);
@@ -32,8 +42,17 @@ public class StudentRepositoryAdapter implements StudentRepositoryPort {
     }
 
     @Override
-    public void remove(StudentId studentId) {
-        studentJdbcRepository.findByStudentId(studentId.value())
-                .ifPresent(studentJdbcRepository::delete);
+    public Optional<Student> remove(Identifier identifier) {
+        Optional<StudentEntity> optEntity = getEntity(identifier);
+        optEntity.ifPresent(studentJdbcRepository::delete);
+        return optEntity.map(studentEntityMapper::mapToDomain);
+    }
+
+    private Optional<StudentEntity> getEntity(Identifier identifier) {
+        return switch (identifier) {
+            case StudentId(var value) -> studentJdbcRepository.findByStudentId(value);
+            case Username(var value) -> studentJdbcRepository.findByUsername(value);
+            default -> throw new IllegalStateException("Unexpected value: " + identifier);
+        };
     }
 }

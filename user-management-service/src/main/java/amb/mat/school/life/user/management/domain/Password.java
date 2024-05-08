@@ -40,13 +40,13 @@ public record Password(String value) {
     private void checkPattern(String value) {
         if (value != null && !PASSWORD_PATTERN.matcher(value).matches()) {
             throw new IllegalArgumentException("""
-                    value must : \
-                    - contain between %s to %s characters \
-                    - include a capital letter \
-                    - include at least one lowercase letter \
-                    - include at least one digit \
-                    - include at least one special character \
-                    - not contain tabs or spaces \
+                    value must :
+                    - contain between %s to %s characters
+                    - include a capital letter
+                    - include at least one lowercase letter
+                    - include at least one digit
+                    - include at least one special character
+                    - not contain tabs or spaces
                     """.formatted(MIN_LENGTH, MAX_LENGTH)
             );
         }

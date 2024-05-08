@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Business Rules :
  * - The username is mandatory.
- * - The email address is mandatory.
+ * - The emailAddress address is mandatory.
  * - The user must have at least one role.
  * - ADMIN role is not compatible with STUDENT.
  */

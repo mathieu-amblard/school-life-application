@@ -41,4 +41,9 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                 new UserDto(user.emailAddress().value(), password.value())
         );
     }
+
+    @Override
+    public void delete(Username username) {
+        userClient.delete(username.value());
+    }
 }

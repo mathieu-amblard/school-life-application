@@ -5,12 +5,22 @@ import amb.mat.school.life.studentservice.application.command.CreateStudentAndUs
 import amb.mat.school.life.studentservice.controller.dto.CreateStudentCommandDto;
 import amb.mat.school.life.studentservice.controller.dto.PatchStudentCommandDto;
 import amb.mat.school.life.studentservice.controller.dto.StudentDto;
-import amb.mat.school.life.studentservice.domain.student.*;
+import amb.mat.school.life.studentservice.domain.student.Birthdate;
+import amb.mat.school.life.studentservice.domain.student.Firstname;
+import amb.mat.school.life.studentservice.domain.student.Lastname;
+import amb.mat.school.life.studentservice.domain.student.Student;
 import amb.mat.school.life.studentservice.domain.student.command.DeleteStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
+import amb.mat.school.life.studentservice.domain.student.query.FindAllStudentsQuery;
 import amb.mat.school.life.studentservice.domain.user.EmailAddress;
 import amb.mat.school.life.studentservice.domain.user.Password;
 import amb.mat.school.life.studentservice.domain.user.Username;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,7 +31,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/students")
@@ -35,6 +46,7 @@ public class StudentController {
         this.studentApplicationService = studentApplicationService;
     }
 
+    @Operation(summary = "Get the authenticated student username")
     @PreAuthorize("hasRole('student')")
     @GetMapping("/whoami")
     public String getWhoAmI() {
@@ -44,6 +56,34 @@ public class StudentController {
         return principal.getSubject();
     }
 
+    @Operation(summary = "Get all students")
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping
+    public ResponseEntity<List<StudentDto>> getAllStudents() {
+        List<StudentDto> studentDtos = studentApplicationService.getStudents(new FindAllStudentsQuery())
+                .stream()
+                .map(student -> mapToDto(student, null))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(studentDtos);
+    }
+
+    @Operation(summary = "Create a new student")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    examples = @ExampleObject(
+                            """
+                                    {
+                                      "username": "student123",
+                                      "password": "Student123$",
+                                      "emailAddress": "jamison.rocha@email.com",
+                                      "lastname": "Rocha",
+                                      "firstname": "Jamison",
+                                      "birthdate": "2020-05-01"
+                                    }
+                                    """
+                    )
+            )
+    )
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,36 +97,90 @@ public class StudentController {
                 new Birthdate(command.birthdate())
         );
         Student student = studentApplicationService.createStudent(createStudentAndUserCommand);
-        StudentDto studentDto = new StudentDto(
-                student.studentId().value(),
-                student.username().value(),
-                // Ideally we should retrieve if from the user bounded context
-                // but this value must not be altered (except for formatting, i.e. toLowercase, trim, ...)
-                command.emailAddress(),
-                student.lastname().value(),
-                student.firstname().value(),
-                student.birthdate().value()
-        );
+        StudentDto studentDto = mapToDto(student, command.emailAddress());
         return ResponseEntity.status(HttpStatus.CREATED).body(studentDto);
     }
 
+    @Operation(summary = "Patch an existing student")
+    @Parameters(
+            @Parameter(
+                    name = "identifier",
+                    in = ParameterIn.PATH,
+                    required = true,
+                    examples = {
+                            @ExampleObject(
+                                    name = "with_student_id",
+                                    value = "11111111-1111-1111-1111-111111111111"
+                            ),
+                            @ExampleObject(
+                                    name = "with_username",
+                                    value = "student123"
+                            )
+                    }
+            )
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    examples = @ExampleObject(
+                            """
+                                    {
+                                       "lastname": "Middleton",
+                                       "firstname": "Ericka",
+                                       "birthdate": "2019-03-20"
+                                    }
+                                    """
+                    )
+            )
+    )
     @PreAuthorize("hasRole('admin')")
-    @PatchMapping("/{studentId}")
+    @PatchMapping("/{identifier}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String studentId, @RequestBody PatchStudentCommandDto command) {
+    public void update(@PathVariable String identifier, @RequestBody PatchStudentCommandDto command) {
         UpdateStudentCommand updateStudentCommand = new UpdateStudentCommand(
-                new StudentId(studentId),
-                Optional.ofNullable(command.lastname()).map(Lastname::new).orElse(null),
-                Optional.ofNullable(command.firstname()).map(Firstname::new).orElse(null),
-                Optional.ofNullable(command.birthdate()).map(Birthdate::new).orElse(null)
+                identifier,
+                command.lastname(),
+                command.firstname(),
+                command.birthdate()
         );
         studentApplicationService.updateStudent(updateStudentCommand);
     }
 
+    @Operation(summary = "Delete an existing student")
+    @Parameters(
+            @Parameter(
+                    name = "identifier",
+                    in = ParameterIn.PATH,
+                    required = true,
+                    examples = {
+                            @ExampleObject(
+                                    name = "with_student_id",
+                                    value = "11111111-1111-1111-1111-111111111111"
+                            ),
+                            @ExampleObject(
+                                    name = "with_username",
+                                    value = "student123"
+                            )
+                    }
+            )
+    )
     @PreAuthorize("hasRole('admin')")
-    @DeleteMapping("/{studentId}")
+    @DeleteMapping("/{identifier}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String studentId) {
-        studentApplicationService.deleteStudent(new DeleteStudentCommand(new StudentId(studentId)));
+    public void delete(@PathVariable String identifier) {
+        studentApplicationService.deleteStudent(new DeleteStudentCommand(identifier));
+    }
+
+    // TODO put in a dedicated mapper
+    private static StudentDto mapToDto(Student student, String emailAddress) {
+        return new StudentDto(
+                student.studentId().value(),
+                student.username().value(),
+                // Ideally we should retrieve if from the user bounded context
+                // but this value must not be altered (except for formatting, i.e. toLowercase, trim, ...)
+                emailAddress,
+                student.lastname().value(),
+                student.firstname().value(),
+                student.birthdate().value()
+        );
     }
 }

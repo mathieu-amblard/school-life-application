@@ -16,7 +16,7 @@ ContextMap SchoolLifeMapping {
 	contains UserManagementContext
 	contains EquipmentContext
 	
-	// U (Upstream) / D (Downstream) => An upstream contextt will influence the downstream counterpart, the opposite might not be true
+	// U (Upstream) / D (Downstream) => An upstream context will influence the downstream counterpart, the opposite might not be true
 	// OHS (Open-host Service) => Like a public API for several consumers, has a common, general purpose model and functionality (is always an upstream)
 	// ACL (Anti-Corruption Layer) => Translates one model to another one to reduce the amount to coupling (is always a downstream)
 

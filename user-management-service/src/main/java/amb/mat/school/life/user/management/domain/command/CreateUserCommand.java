@@ -49,7 +49,7 @@ public record CreateUserCommand(
 
     private void checkEmailAddressMandatory(EmailAddress emailAddress) {
         if (emailAddress == null) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the email address is required"));
+            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the emailAddress address is required"));
         }
     }
 

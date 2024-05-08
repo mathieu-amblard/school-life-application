@@ -1,8 +1,10 @@
 package amb.mat.school.life.studentservice.domain.student;
 
+import amb.mat.school.life.studentservice.domain.Identifier;
+
 import java.util.UUID;
 
-public record StudentId(String value) {
+public record StudentId(String value) implements Identifier {
 
     private static final String UUID_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 

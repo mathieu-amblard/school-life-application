@@ -36,4 +36,10 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         UserEntity userEntity = userEntityMapper.mapToEntity(id, user, encodedPassword);
         userJdbcRepository.save(userEntity);
     }
+
+    @Override
+    public void remove(Username username) {
+        userJdbcRepository.findByUsername(username.value())
+                .ifPresent(userJdbcRepository::delete);
+    }
 }

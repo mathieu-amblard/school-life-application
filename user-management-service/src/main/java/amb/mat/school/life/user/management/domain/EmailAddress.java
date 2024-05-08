@@ -2,8 +2,8 @@ package amb.mat.school.life.user.management.domain;
 
 /**
  * Business Rules :
- * - The email address is mandatory.
- * - The email address is valid.
+ * - The emailAddress address is mandatory.
+ * - The emailAddress address is valid.
  */
 public record EmailAddress(String value) {
 
@@ -24,7 +24,7 @@ public record EmailAddress(String value) {
 
     private void checkValid(String value) {
         if (value != null && !value.matches(EMAIL_REGEX)) {
-            throw new IllegalArgumentException("value %s must be a valid email address".formatted(value));
+            throw new IllegalArgumentException("value %s must be a valid emailAddress address".formatted(value));
         }
     }
 }

@@ -1,6 +1,7 @@
 package amb.mat.school.life.user.management.domain;
 
 import amb.mat.school.life.user.management.domain.command.CreateUserCommand;
+import amb.mat.school.life.user.management.domain.command.DeleteUserCommand;
 import amb.mat.school.life.user.management.domain.command.UpdateUserCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserQuery;
 import amb.mat.school.life.user.management.domain.query.IsOwnedByQuery;
@@ -106,5 +107,15 @@ public class UserService {
             EncodedPassword encodedPassword = Optional.ofNullable(command.password()).map(passwordEncoder::encode).orElse(null);
             userRepository.put(user, encodedPassword);
         }
+    }
+
+    /**
+     * Delete an existing user
+     *
+     * @param command the {@link DeleteUserCommand} to use
+     */
+    @Transactional
+    public void deleteUser(DeleteUserCommand command) {
+        userRepository.remove(command.username());
     }
 }

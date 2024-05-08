@@ -4,7 +4,7 @@ import java.util.List;
 
 public record UserDto(
         String username,
-        String email,
+        String emailAddress,
         List<String> roles
 ) {
 }

@@ -6,7 +6,6 @@ import amb.mat.school.life.studentservice.domain.student.command.CreateStudentCo
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
 import amb.mat.school.life.studentservice.domain.user.Username;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -110,13 +109,33 @@ public class Student {
      * @return {@code true} if the current student has been update, false otherwise
      */
     public boolean updateInformation(UpdateStudentCommand command) {
-        boolean needsUpdate =
-                (command.lastname() != null && !command.lastname().equals(lastname)) ||
-                        (command.firstname() != null && !command.firstname().equals(firstname)) ||
-                        (command.birthdate() != null && !command.birthdate().equals(birthdate));
-        lastname = Optional.ofNullable(command.lastname()).orElse(lastname);
-        firstname = Optional.ofNullable(command.firstname()).orElse(firstname);
-        birthdate = Optional.ofNullable(command.birthdate()).orElse(birthdate);
-        return needsUpdate;
+        boolean updatedLastname = updateLastname(command.lastname());
+        boolean updatedFirstname = updateFirstname(command.firstname());
+        boolean updatedBirthdate = updateBirthdate(command.birthdate());
+        return updatedLastname || updatedFirstname || updatedBirthdate;
+    }
+
+    private boolean updateLastname(Lastname newValue) {
+        if (newValue != null && !newValue.equals(lastname)) {
+            lastname = newValue;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateFirstname(Firstname newValue) {
+        if (newValue != null && !newValue.equals(firstname)) {
+            firstname = newValue;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateBirthdate(Birthdate newValue) {
+        if (newValue != null && !newValue.equals(birthdate)) {
+            birthdate = newValue;
+            return true;
+        }
+        return false;
     }
 }

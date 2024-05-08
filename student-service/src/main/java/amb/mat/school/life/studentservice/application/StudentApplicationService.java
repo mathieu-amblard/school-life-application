@@ -6,13 +6,20 @@ import amb.mat.school.life.studentservice.domain.student.StudentService;
 import amb.mat.school.life.studentservice.domain.student.command.CreateStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.DeleteStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
+import amb.mat.school.life.studentservice.domain.student.query.FindAllStudentsQuery;
 import amb.mat.school.life.studentservice.domain.user.User;
 import amb.mat.school.life.studentservice.domain.user.UserRepositoryPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Facade + Orchestrator of the different domains (aka bounded contexts)
  */
 public class StudentApplicationService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StudentApplicationService.class);
 
     private final StudentService studentService;
     private final UserRepositoryPort userRepositoryPort;
@@ -22,7 +29,11 @@ public class StudentApplicationService {
         this.userRepositoryPort = userRepositoryPort;
     }
 
-    // No @Transactional here
+    public List<Student> getStudents(FindAllStudentsQuery query) {
+        return this.studentService.getStudents();
+    }
+
+    // No @Transactional here + Saga
     // Because we do not how much time the connection to the database will stay opened
     // Due to the remote service call...
     // See https://youtu.be/exqfB1WaqIw
@@ -53,6 +64,7 @@ public class StudentApplicationService {
             // Ideally, we should compensate using an event mechanism in order to be able to retry asynchronously
             // In case of the compensation fails also
             studentService.deleteStudent(new DeleteStudentCommand(student.studentId()));
+            throw new RuntimeException(exception); // TODO Throw a dedicated exception
         }
         return student;
     }
@@ -63,7 +75,22 @@ public class StudentApplicationService {
         studentService.updateStudent(command);
     }
 
+    // No @Transactional here + Saga
     public void deleteStudent(DeleteStudentCommand command) {
-        studentService.deleteStudent(command);
+        studentService.deleteStudent(command)
+                .ifPresent(student -> {
+                    try {
+                        userRepositoryPort.delete(student.username());
+                    } catch (Exception exception) {
+                        CreateStudentCommand createStudentCommand = new CreateStudentCommand(
+                                student.username(),
+                                student.lastname(),
+                                student.firstname(),
+                                student.birthdate()
+                        );
+                        studentService.createStudent(createStudentCommand);
+                        throw new RuntimeException(exception); // TODO Throw a dedicated exception
+                    }
+                });
     }
 }

@@ -4,6 +4,7 @@ import amb.mat.school.life.user.management.controller.dto.PutUserCommandDto;
 import amb.mat.school.life.user.management.controller.dto.UserDto;
 import amb.mat.school.life.user.management.domain.*;
 import amb.mat.school.life.user.management.domain.command.CreateUserCommand;
+import amb.mat.school.life.user.management.domain.command.DeleteUserCommand;
 import amb.mat.school.life.user.management.domain.command.UpdateUserCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserQuery;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -64,5 +65,12 @@ public class UserController {
             userService.createUser(command);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("/{username}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String username) {
+        userService.deleteUser(new DeleteUserCommand(new Username(username)));
     }
 }
