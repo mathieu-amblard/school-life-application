@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>amb.mat.school.life</groupId>
-    <artifactId>student-service</artifactId>
+    <artifactId>teacher-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>student-service</name>
-    <description>This bounded context allows teachers manage data of students.</description>
+    <name>teacher-service</name>
+    <description>This bounded context allows teachers manage data of teachers.</description>
     <properties>
         <java.version>21</java.version>
         <springdoc-openapi.version>2.5.0</springdoc-openapi.version>

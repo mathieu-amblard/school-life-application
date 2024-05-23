@@ -5,9 +5,9 @@
     "bodyPatterns": [
       {
         "equalToJson": {
-          "emailAddress": "username@student.com",
+          "emailAddress": "username@teacher.com",
           "roles": [
-            "STUDENT"
+            "TEACHER"
           ]
         },
         "ignoreArrayOrder": true,

@@ -1,20 +1,20 @@
-package amb.mat.school.life.studentservice.controller;
+package amb.mat.school.life.teacherservice.controller;
 
-import amb.mat.school.life.studentservice.application.StudentApplicationService;
-import amb.mat.school.life.studentservice.application.command.CreateStudentAndUserCommand;
-import amb.mat.school.life.studentservice.controller.dto.CreateStudentCommandDto;
-import amb.mat.school.life.studentservice.controller.dto.PatchStudentCommandDto;
-import amb.mat.school.life.studentservice.controller.dto.StudentDto;
-import amb.mat.school.life.studentservice.domain.student.Birthdate;
-import amb.mat.school.life.studentservice.domain.student.Firstname;
-import amb.mat.school.life.studentservice.domain.student.Lastname;
-import amb.mat.school.life.studentservice.domain.student.Student;
-import amb.mat.school.life.studentservice.domain.student.command.DeleteStudentCommand;
-import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
-import amb.mat.school.life.studentservice.domain.student.query.FindAllStudentsQuery;
-import amb.mat.school.life.studentservice.domain.user.EmailAddress;
-import amb.mat.school.life.studentservice.domain.user.Password;
-import amb.mat.school.life.studentservice.domain.user.Username;
+import amb.mat.school.life.teacherservice.application.TeacherApplicationService;
+import amb.mat.school.life.teacherservice.application.command.CreateTeacherAndUserCommand;
+import amb.mat.school.life.teacherservice.controller.dto.CreateTeacherCommandDto;
+import amb.mat.school.life.teacherservice.controller.dto.PatchTeacherCommandDto;
+import amb.mat.school.life.teacherservice.controller.dto.TeacherDto;
+import amb.mat.school.life.teacherservice.domain.teacher.Birthdate;
+import amb.mat.school.life.teacherservice.domain.teacher.Firstname;
+import amb.mat.school.life.teacherservice.domain.teacher.Lastname;
+import amb.mat.school.life.teacherservice.domain.teacher.Teacher;
+import amb.mat.school.life.teacherservice.domain.teacher.command.DeleteTeacherCommand;
+import amb.mat.school.life.teacherservice.domain.teacher.command.UpdateTeacherCommand;
+import amb.mat.school.life.teacherservice.domain.teacher.query.FindAllTeachersQuery;
+import amb.mat.school.life.teacherservice.domain.user.EmailAddress;
+import amb.mat.school.life.teacherservice.domain.user.Password;
+import amb.mat.school.life.teacherservice.domain.user.Username;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -34,19 +34,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/students")
-public class StudentController {
+@RequestMapping("/api/teachers")
+public class TeacherController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TeacherController.class);
 
-    private final StudentApplicationService studentApplicationService;
+    private final TeacherApplicationService teacherApplicationService;
 
-    public StudentController(StudentApplicationService studentApplicationService) {
-        this.studentApplicationService = studentApplicationService;
+    public TeacherController(TeacherApplicationService teacherApplicationService) {
+        this.teacherApplicationService = teacherApplicationService;
     }
 
-    @Operation(summary = "Get the authenticated student username")
-    @PreAuthorize("hasRole('student')")
+    @Operation(summary = "Get the authenticated teacher username")
+    @PreAuthorize("hasRole('teacher')")
     @GetMapping("/whoami")
     public String getWhoAmI() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -55,25 +55,25 @@ public class StudentController {
         return principal.getSubject();
     }
 
-    @Operation(summary = "Get all students")
+    @Operation(summary = "Get all teachers")
     @PreAuthorize("hasRole('admin')")
     @GetMapping
-    public ResponseEntity<List<StudentDto>> getAllStudents() {
-        List<StudentDto> studentDtos = studentApplicationService.getStudents(new FindAllStudentsQuery())
+    public ResponseEntity<List<TeacherDto>> getAllTeachers() {
+        List<TeacherDto> teacherDtos = teacherApplicationService.getTeachers(new FindAllTeachersQuery())
                 .stream()
-                .map(student -> mapToDto(student, null))
+                .map(teacher -> mapToDto(teacher, null))
                 .toList();
-        return ResponseEntity.ok(studentDtos);
+        return ResponseEntity.ok(teacherDtos);
     }
 
-    @Operation(summary = "Create a new student")
+    @Operation(summary = "Create a new teacher")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
                     examples = @ExampleObject(
                             """
                                     {
-                                      "username": "student123",
-                                      "password": "Student123$",
+                                      "username": "teacher123",
+                                      "password": "Teacher123$",
                                       "emailAddress": "jamison.rocha@email.com",
                                       "lastname": "Rocha",
                                       "firstname": "Jamison",
@@ -86,8 +86,8 @@ public class StudentController {
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<StudentDto> create(@RequestBody CreateStudentCommandDto command) {
-        CreateStudentAndUserCommand createStudentAndUserCommand = new CreateStudentAndUserCommand(
+    public ResponseEntity<TeacherDto> create(@RequestBody CreateTeacherCommandDto command) {
+        CreateTeacherAndUserCommand createTeacherAndUserCommand = new CreateTeacherAndUserCommand(
                 new Username(command.username()),
                 new Password(command.password()),
                 new EmailAddress(command.emailAddress()),
@@ -95,12 +95,12 @@ public class StudentController {
                 new Firstname(command.firstname()),
                 new Birthdate(command.birthdate())
         );
-        Student student = studentApplicationService.createStudent(createStudentAndUserCommand);
-        StudentDto studentDto = mapToDto(student, command.emailAddress());
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentDto);
+        Teacher teacher = teacherApplicationService.createTeacher(createTeacherAndUserCommand);
+        TeacherDto teacherDto = mapToDto(teacher, command.emailAddress());
+        return ResponseEntity.status(HttpStatus.CREATED).body(teacherDto);
     }
 
-    @Operation(summary = "Patch an existing student")
+    @Operation(summary = "Patch an existing teacher")
     @Parameters(
             @Parameter(
                     name = "identifier",
@@ -108,12 +108,12 @@ public class StudentController {
                     required = true,
                     examples = {
                             @ExampleObject(
-                                    name = "with_student_id",
+                                    name = "with_teacher_id",
                                     value = "11111111-1111-1111-1111-111111111111"
                             ),
                             @ExampleObject(
                                     name = "with_username",
-                                    value = "student123"
+                                    value = "teacher123"
                             )
                     }
             )
@@ -134,17 +134,17 @@ public class StudentController {
     @PreAuthorize("hasRole('admin')")
     @PatchMapping("/{identifier}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String identifier, @RequestBody PatchStudentCommandDto command) {
-        UpdateStudentCommand updateStudentCommand = new UpdateStudentCommand(
+    public void update(@PathVariable String identifier, @RequestBody PatchTeacherCommandDto command) {
+        UpdateTeacherCommand updateTeacherCommand = new UpdateTeacherCommand(
                 identifier,
                 command.lastname(),
                 command.firstname(),
                 command.birthdate()
         );
-        studentApplicationService.updateStudent(updateStudentCommand);
+        teacherApplicationService.updateTeacher(updateTeacherCommand);
     }
 
-    @Operation(summary = "Delete an existing student")
+    @Operation(summary = "Delete an existing teacher")
     @Parameters(
             @Parameter(
                     name = "identifier",
@@ -152,12 +152,12 @@ public class StudentController {
                     required = true,
                     examples = {
                             @ExampleObject(
-                                    name = "with_student_id",
+                                    name = "with_teacher_id",
                                     value = "11111111-1111-1111-1111-111111111111"
                             ),
                             @ExampleObject(
                                     name = "with_username",
-                                    value = "student123"
+                                    value = "teacher123"
                             )
                     }
             )
@@ -166,20 +166,20 @@ public class StudentController {
     @DeleteMapping("/{identifier}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String identifier) {
-        studentApplicationService.deleteStudent(new DeleteStudentCommand(identifier));
+        teacherApplicationService.deleteTeacher(new DeleteTeacherCommand(identifier));
     }
 
     // TODO put in a dedicated mapper
-    private static StudentDto mapToDto(Student student, String emailAddress) {
-        return new StudentDto(
-                student.studentId().value(),
-                student.username().value(),
+    private static TeacherDto mapToDto(Teacher teacher, String emailAddress) {
+        return new TeacherDto(
+                teacher.teacherId().value(),
+                teacher.username().value(),
                 // Ideally we should retrieve if from the user bounded context
                 // but this value must not be altered (except for formatting, i.e. toLowercase, trim, ...)
                 emailAddress,
-                student.lastname().value(),
-                student.firstname().value(),
-                student.birthdate().value()
+                teacher.lastname().value(),
+                teacher.firstname().value(),
+                teacher.birthdate().value()
         );
     }
 }

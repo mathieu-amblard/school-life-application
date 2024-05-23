@@ -1,6 +1,6 @@
-package amb.mat.school.life.studentservice.controller;
+package amb.mat.school.life.teacherservice.controller;
 
-import amb.mat.school.life.studentservice.persistence.StudentEntity;
+import amb.mat.school.life.teacherservice.persistence.TeacherEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
-class StudentControllerIT {
+class TeacherControllerIT {
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
@@ -61,7 +61,7 @@ class StudentControllerIT {
 
     @BeforeEach
     void beforeEach() {
-        jdbcTemplate.execute("DELETE FROM students");
+        jdbcTemplate.execute("DELETE FROM teachers");
     }
 
     @Test
@@ -69,10 +69,10 @@ class StudentControllerIT {
         // Given
         // When
         ResultActions resultActions = mockMvc
-                .perform(get("/api/students/whoami")
+                .perform(get("/api/teachers/whoami")
                         .with(jwt()
                                 .authorities(jwtGrantedAuthoritiesConverter)
-                                .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "student"))))
+                                .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "teacher"))))
                 );
         // Then
         resultActions
@@ -81,11 +81,11 @@ class StudentControllerIT {
     }
 
     @Test
-    void should_create_new_student() throws Exception {
+    void should_create_new_teacher() throws Exception {
         // Given
         // When
         ResultActions resultActions = mockMvc
-                .perform(post("/api/students")
+                .perform(post("/api/teachers")
                         .with(jwt()
                                 .authorities(jwtGrantedAuthoritiesConverter)
                                 .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "admin"))))
@@ -95,7 +95,7 @@ class StudentControllerIT {
                                         {
                                             "username": "username",
                                             "password": "password",
-                                            "emailAddress": "username@student.com",
+                                            "emailAddress": "username@teacher.com",
                                             "lastname": "Lastname",
                                             "firstname": "Firstname",
                                             "birthdate": "2021-10-23"
@@ -110,34 +110,34 @@ class StudentControllerIT {
                         """
                                 {
                                     "username": "username",
-                                    "emailAddress": "username@student.com",
+                                    "emailAddress": "username@teacher.com",
                                     "lastname": "Lastname",
                                     "firstname": "Firstname",
                                     "birthdate": "2021-10-23"
                                 }
                                 """
                 ));
-        Optional<StudentEntity> optStudentEntity = findStudentByUsername("username");
-        assertThat(optStudentEntity)
+        Optional<TeacherEntity> optTeacherEntity = findTeacherByUsername("username");
+        assertThat(optTeacherEntity)
                 .isPresent()
-                .hasValueSatisfying(studentEntity -> {
-                    assertThat(studentEntity.id()).isPositive();
-                    assertThat(studentEntity.studentId()).isNotBlank();
-                    assertThat(studentEntity.username()).isEqualTo("username");
-                    assertThat(studentEntity.lastname()).isEqualTo("Lastname");
-                    assertThat(studentEntity.firstname()).isEqualTo("Firstname");
-                    assertThat(studentEntity.birthdate()).isEqualTo(LocalDate.of(2021, 10, 23));
+                .hasValueSatisfying(teacherEntity -> {
+                    assertThat(teacherEntity.id()).isPositive();
+                    assertThat(teacherEntity.teacherId()).isNotBlank();
+                    assertThat(teacherEntity.username()).isEqualTo("username");
+                    assertThat(teacherEntity.lastname()).isEqualTo("Lastname");
+                    assertThat(teacherEntity.firstname()).isEqualTo("Firstname");
+                    assertThat(teacherEntity.birthdate()).isEqualTo(LocalDate.of(2021, 10, 23));
                 });
     }
 
     @Test
-    void should_patch_existing_student() throws Exception {
+    void should_patch_existing_teacher() throws Exception {
         // Given
         String username = "username";
-        String studentId = insertStudent(username);
+        String teacherId = insertTeacher(username);
         // When
         ResultActions resultActions = mockMvc
-                .perform(patch("/api/students/{studentId}", studentId)
+                .perform(patch("/api/teachers/{teacherId}", teacherId)
                         .with(jwt()
                                 .authorities(jwtGrantedAuthoritiesConverter)
                                 .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "admin"))))
@@ -154,51 +154,51 @@ class StudentControllerIT {
                 );
         // Then
         resultActions.andExpect(status().isNoContent());
-        Optional<StudentEntity> optStudentEntity = findStudentByUsername(username);
-        assertThat(optStudentEntity)
+        Optional<TeacherEntity> optTeacherEntity = findTeacherByUsername(username);
+        assertThat(optTeacherEntity)
                 .isPresent()
-                .hasValueSatisfying(studentEntity -> {
-                    assertThat(studentEntity.id()).isPositive();
-                    assertThat(studentEntity.studentId()).isEqualTo(studentId);
-                    assertThat(studentEntity.username()).isEqualTo(username);
-                    assertThat(studentEntity.lastname()).isEqualTo("Shelby");
-                    assertThat(studentEntity.firstname()).isEqualTo("Thomas");
-                    assertThat(studentEntity.birthdate()).isEqualTo(LocalDate.of(2018, 6, 27));
+                .hasValueSatisfying(teacherEntity -> {
+                    assertThat(teacherEntity.id()).isPositive();
+                    assertThat(teacherEntity.teacherId()).isEqualTo(teacherId);
+                    assertThat(teacherEntity.username()).isEqualTo(username);
+                    assertThat(teacherEntity.lastname()).isEqualTo("Shelby");
+                    assertThat(teacherEntity.firstname()).isEqualTo("Thomas");
+                    assertThat(teacherEntity.birthdate()).isEqualTo(LocalDate.of(2018, 6, 27));
                 });
     }
 
     @Test
-    void should_delete_existing_student() throws Exception {
+    void should_delete_existing_teacher() throws Exception {
         // Given
         String username = "username";
-        String studentId = insertStudent(username);
+        String teacherId = insertTeacher(username);
         // When
         ResultActions resultActions = mockMvc
-                .perform(delete("/api/students/{studentId}", studentId)
+                .perform(delete("/api/teachers/{teacherId}", teacherId)
                         .with(jwt()
                                 .authorities(jwtGrantedAuthoritiesConverter)
                                 .jwt(jwt -> jwt.claims(claims -> claims.put("roles", "admin"))))
                 );
         // Then
         resultActions.andExpect(status().isNoContent());
-        Optional<StudentEntity> studentEntity = findStudentByUsername(username);
-        assertThat(studentEntity).isEmpty();
+        Optional<TeacherEntity> teacherEntity = findTeacherByUsername(username);
+        assertThat(teacherEntity).isEmpty();
     }
 
-    private String insertStudent(String username) {
-        String studentId = UUID.randomUUID().toString();
+    private String insertTeacher(String username) {
+        String teacherId = UUID.randomUUID().toString();
         jdbcTemplate.execute("""
-                INSERT INTO students (student_id, username, lastname, firstname, birthdate)
+                INSERT INTO teachers (teacher_id, username, lastname, firstname, birthdate)
                 VALUES ('%s', '%s', 'Lastname', 'Firstname', '2021-10-23')
-                """.formatted(studentId, username)
+                """.formatted(teacherId, username)
         );
-        return studentId;
+        return teacherId;
     }
 
-    private Optional<StudentEntity> findStudentByUsername(String username) {
+    private Optional<TeacherEntity> findTeacherByUsername(String username) {
         return jdbcTemplate.query(
-                "SELECT * FROM students WHERE username = '%s'".formatted(username),
-                new DataClassRowMapper<>(StudentEntity.class)
+                "SELECT * FROM teachers WHERE username = '%s'".formatted(username),
+                new DataClassRowMapper<>(TeacherEntity.class)
         ).stream().findFirst();
     }
 }

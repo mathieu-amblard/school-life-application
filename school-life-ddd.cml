@@ -102,7 +102,6 @@ BoundedContext TeacherContext implements TeacherDomain {
 
 			- TeacherId teacherId
 			- UserAccount userAccount
-            # TODO lastname, firstname in UserAccount ?
 			String lastname
 			String firstname
 			String resume

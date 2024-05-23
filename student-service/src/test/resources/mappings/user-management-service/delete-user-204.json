@@ -1,0 +1,9 @@
+{
+  "request": {
+    "urlPath": "/api/users/username",
+    "method": "DELETE"
+  },
+  "response": {
+    "status": 204
+  }
+}

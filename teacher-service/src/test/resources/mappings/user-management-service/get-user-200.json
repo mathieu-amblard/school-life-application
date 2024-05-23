@@ -1,0 +1,9 @@
+{
+  "request": {
+    "urlPath": "/api/users/username",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}
