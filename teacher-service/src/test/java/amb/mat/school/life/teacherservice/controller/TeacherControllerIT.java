@@ -20,7 +20,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -98,7 +97,7 @@ class TeacherControllerIT {
                                             "emailAddress": "username@teacher.com",
                                             "lastname": "Lastname",
                                             "firstname": "Firstname",
-                                            "birthdate": "2021-10-23"
+                                            "resume": "Core Qualifications : ..."
                                         }
                                         """
                         )
@@ -113,7 +112,7 @@ class TeacherControllerIT {
                                     "emailAddress": "username@teacher.com",
                                     "lastname": "Lastname",
                                     "firstname": "Firstname",
-                                    "birthdate": "2021-10-23"
+                                    "resume": "Core Qualifications : ..."
                                 }
                                 """
                 ));
@@ -126,7 +125,7 @@ class TeacherControllerIT {
                     assertThat(teacherEntity.username()).isEqualTo("username");
                     assertThat(teacherEntity.lastname()).isEqualTo("Lastname");
                     assertThat(teacherEntity.firstname()).isEqualTo("Firstname");
-                    assertThat(teacherEntity.birthdate()).isEqualTo(LocalDate.of(2021, 10, 23));
+                    assertThat(teacherEntity.resume()).isEqualTo("Core Qualifications : ...");
                 });
     }
 
@@ -147,7 +146,7 @@ class TeacherControllerIT {
                                         {
                                             "lastname": "Shelby",
                                             "firstname": "Thomas",
-                                            "birthdate": "2018-06-27"
+                                            "resume": "Core Qualifications : ..."
                                         }
                                         """
                         )
@@ -163,7 +162,7 @@ class TeacherControllerIT {
                     assertThat(teacherEntity.username()).isEqualTo(username);
                     assertThat(teacherEntity.lastname()).isEqualTo("Shelby");
                     assertThat(teacherEntity.firstname()).isEqualTo("Thomas");
-                    assertThat(teacherEntity.birthdate()).isEqualTo(LocalDate.of(2018, 6, 27));
+                    assertThat(teacherEntity.resume()).isEqualTo("Core Qualifications : ...");
                 });
     }
 
@@ -188,8 +187,8 @@ class TeacherControllerIT {
     private String insertTeacher(String username) {
         String teacherId = UUID.randomUUID().toString();
         jdbcTemplate.execute("""
-                INSERT INTO teachers (teacher_id, username, lastname, firstname, birthdate)
-                VALUES ('%s', '%s', 'Lastname', 'Firstname', '2021-10-23')
+                INSERT INTO teachers (teacher_id, username, lastname, firstname, resume)
+                VALUES ('%s', '%s', 'Lastname', 'Firstname', 'My resume')
                 """.formatted(teacherId, username)
         );
         return teacherId;

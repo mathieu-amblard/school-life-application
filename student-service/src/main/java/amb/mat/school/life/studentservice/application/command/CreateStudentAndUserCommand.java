@@ -45,20 +45,20 @@ public record CreateStudentAndUserCommand(
         }
     }
 
-    private void checkLastname(Lastname username) {
-        if (username == null) {
+    private void checkLastname(Lastname lastname) {
+        if (lastname == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the lastname is required"));
         }
     }
 
-    private void checkFirstname(Firstname username) {
-        if (username == null) {
+    private void checkFirstname(Firstname firstname) {
+        if (firstname == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the firstname is required"));
         }
     }
 
-    private void checkBirthdate(Birthdate username) {
-        if (username == null) {
+    private void checkBirthdate(Birthdate birthdate) {
+        if (birthdate == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the birthdate is required"));
         }
     }

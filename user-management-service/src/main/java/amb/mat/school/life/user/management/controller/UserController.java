@@ -7,6 +7,7 @@ import amb.mat.school.life.user.management.domain.command.CreateUserCommand;
 import amb.mat.school.life.user.management.domain.command.DeleteUserCommand;
 import amb.mat.school.life.user.management.domain.command.UpdateUserCommand;
 import amb.mat.school.life.user.management.domain.query.FindUserQuery;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,14 @@ public class UserController {
         this.userDtoMapper = userDtoMapper;
     }
 
+    @Operation(summary = "Get the authenticated user")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/whoami")
     public UserDto getWhoAmI() {
         return userDtoMapper.mapToDto(userService.getMyUser());
     }
 
+    @Operation(summary = "Get an existing user")
     @PreAuthorize("hasRole('admin') or @userService.isOwnedBy(#username, authentication.name)  or #username == authentication.name")
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUser(@PathVariable String username) {
@@ -44,6 +47,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Update an existing user")
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/{username}") // Idempotency, simplify error handling on consumers (retry for instance)
     public ResponseEntity<Void> putUser(@PathVariable String username, @RequestBody PutUserCommandDto commandDto) {
@@ -67,6 +71,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Operation(summary = "Delete an existing user")
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

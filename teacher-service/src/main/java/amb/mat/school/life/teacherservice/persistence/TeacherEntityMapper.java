@@ -11,7 +11,7 @@ public class TeacherEntityMapper {
                 new Username(teacherEntity.username()),
                 new Lastname(teacherEntity.lastname()),
                 new Firstname(teacherEntity.firstname()),
-                new Birthdate(teacherEntity.birthdate())
+                new Resume(teacherEntity.resume())
         );
     }
 
@@ -22,7 +22,7 @@ public class TeacherEntityMapper {
                 teacher.username().value(),
                 teacher.lastname().value(),
                 teacher.firstname().value(),
-                teacher.birthdate().value()
+                teacher.resume().value()
         );
     }
 }

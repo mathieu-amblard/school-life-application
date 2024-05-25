@@ -3,8 +3,6 @@ package amb.mat.school.life.teacherservice.persistence;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDate;
-
 /**
  * No specific constraints on entities, business rules must be in the domain
  */
@@ -15,6 +13,6 @@ public record TeacherEntity(
         String username,
         String lastname,
         String firstname,
-        LocalDate birthdate
+        String resume
 ) {
 }

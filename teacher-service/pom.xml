@@ -12,7 +12,7 @@
     <artifactId>teacher-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>teacher-service</name>
-    <description>This bounded context allows teachers manage data of teachers.</description>
+    <description>This bounded context allows administrators to manage data of teachers.</description>
     <properties>
         <java.version>21</java.version>
         <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
@@ -99,6 +99,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jmxPort>9083</jmxPort>
+                </configuration>
             </plugin>
         </plugins>
     </build>

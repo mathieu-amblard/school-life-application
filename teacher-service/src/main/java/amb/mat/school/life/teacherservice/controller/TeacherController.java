@@ -5,16 +5,10 @@ import amb.mat.school.life.teacherservice.application.command.CreateTeacherAndUs
 import amb.mat.school.life.teacherservice.controller.dto.CreateTeacherCommandDto;
 import amb.mat.school.life.teacherservice.controller.dto.PatchTeacherCommandDto;
 import amb.mat.school.life.teacherservice.controller.dto.TeacherDto;
-import amb.mat.school.life.teacherservice.domain.teacher.Birthdate;
-import amb.mat.school.life.teacherservice.domain.teacher.Firstname;
-import amb.mat.school.life.teacherservice.domain.teacher.Lastname;
 import amb.mat.school.life.teacherservice.domain.teacher.Teacher;
 import amb.mat.school.life.teacherservice.domain.teacher.command.DeleteTeacherCommand;
 import amb.mat.school.life.teacherservice.domain.teacher.command.UpdateTeacherCommand;
 import amb.mat.school.life.teacherservice.domain.teacher.query.FindAllTeachersQuery;
-import amb.mat.school.life.teacherservice.domain.user.EmailAddress;
-import amb.mat.school.life.teacherservice.domain.user.Password;
-import amb.mat.school.life.teacherservice.domain.user.Username;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -74,10 +68,10 @@ public class TeacherController {
                                     {
                                       "username": "teacher123",
                                       "password": "Teacher123$",
-                                      "emailAddress": "jamison.rocha@email.com",
-                                      "lastname": "Rocha",
-                                      "firstname": "Jamison",
-                                      "birthdate": "2020-05-01"
+                                      "emailAddress": "eduardo.burnett@email.com",
+                                      "lastname": "Burnett",
+                                      "firstname": "Eduardo",
+                                      "resume": "Summary of Qualifications..."
                                     }
                                     """
                     )
@@ -86,17 +80,10 @@ public class TeacherController {
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TeacherDto> create(@RequestBody CreateTeacherCommandDto command) {
-        CreateTeacherAndUserCommand createTeacherAndUserCommand = new CreateTeacherAndUserCommand(
-                new Username(command.username()),
-                new Password(command.password()),
-                new EmailAddress(command.emailAddress()),
-                new Lastname(command.lastname()),
-                new Firstname(command.firstname()),
-                new Birthdate(command.birthdate())
-        );
+    public ResponseEntity<TeacherDto> create(@RequestBody CreateTeacherCommandDto body) {
+        CreateTeacherAndUserCommand createTeacherAndUserCommand = body.getCommand();
         Teacher teacher = teacherApplicationService.createTeacher(createTeacherAndUserCommand);
-        TeacherDto teacherDto = mapToDto(teacher, command.emailAddress());
+        TeacherDto teacherDto = mapToDto(teacher, body.emailAddress());
         return ResponseEntity.status(HttpStatus.CREATED).body(teacherDto);
     }
 
@@ -123,9 +110,9 @@ public class TeacherController {
                     examples = @ExampleObject(
                             """
                                     {
-                                       "lastname": "Middleton",
-                                       "firstname": "Ericka",
-                                       "birthdate": "2019-03-20"
+                                       "lastname": "Maddox",
+                                       "firstname": "Latisha",
+                                       "resume": "Core Qualifications..."
                                     }
                                     """
                     )
@@ -135,12 +122,7 @@ public class TeacherController {
     @PatchMapping("/{identifier}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable String identifier, @RequestBody PatchTeacherCommandDto command) {
-        UpdateTeacherCommand updateTeacherCommand = new UpdateTeacherCommand(
-                identifier,
-                command.lastname(),
-                command.firstname(),
-                command.birthdate()
-        );
+        UpdateTeacherCommand updateTeacherCommand = command.getCommand(identifier);
         teacherApplicationService.updateTeacher(updateTeacherCommand);
     }
 
@@ -179,7 +161,7 @@ public class TeacherController {
                 emailAddress,
                 teacher.lastname().value(),
                 teacher.firstname().value(),
-                teacher.birthdate().value()
+                teacher.resume().value()
         );
     }
 }

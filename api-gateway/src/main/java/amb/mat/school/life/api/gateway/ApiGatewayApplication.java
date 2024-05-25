@@ -33,6 +33,14 @@ public class ApiGatewayApplication {
                         )
                         .uri("http://localhost:8082")
                 )
+                .route(route -> route
+                        .path("/teacher/**")
+                        .filters(filter -> filter
+                                .rewritePath("/teacher/(?<segment>.*)", "/${segment}")
+                                .tokenRelay()
+                        )
+                        .uri("http://localhost:8083")
+                )
                 .build();
     }
 }

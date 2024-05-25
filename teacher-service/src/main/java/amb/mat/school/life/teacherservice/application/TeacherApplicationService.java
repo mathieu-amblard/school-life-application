@@ -51,7 +51,7 @@ public class TeacherApplicationService {
                 command.username(),
                 command.lastname(),
                 command.firstname(),
-                command.birthdate()
+                command.resume()
         );
         Teacher teacher = teacherService.createTeacher(createTeacherCommand);
         User user = new User(command.username(), command.emailAddress());
@@ -86,7 +86,7 @@ public class TeacherApplicationService {
                                 teacher.username(),
                                 teacher.lastname(),
                                 teacher.firstname(),
-                                teacher.birthdate()
+                                teacher.resume()
                         );
                         teacherService.createTeacher(createTeacherCommand);
                         throw new RuntimeException(exception); // TODO Throw a dedicated exception

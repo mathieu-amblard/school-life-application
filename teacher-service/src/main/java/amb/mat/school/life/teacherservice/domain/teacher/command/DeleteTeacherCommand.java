@@ -6,7 +6,7 @@ import amb.mat.school.life.teacherservice.domain.user.Username;
 
 public record DeleteTeacherCommand(
         Identifier identifier
-) {
+) implements Command {
 
     private static final String ERROR_MESSAGE_TEMPLATE = "to delete a teacher, %s";
 

@@ -1,7 +1,5 @@
 package amb.mat.school.life.teacherservice.domain.teacher;
 
-// TODO record ?
-
 import amb.mat.school.life.teacherservice.domain.teacher.command.CreateTeacherCommand;
 import amb.mat.school.life.teacherservice.domain.teacher.command.UpdateTeacherCommand;
 import amb.mat.school.life.teacherservice.domain.user.Username;
@@ -14,7 +12,7 @@ import java.util.UUID;
  * - The username is mandatory. (reference between aggregates → no foreign keys but reference by simple IDs to have a relatively loose coupling)
  * - The lastname is mandatory.
  * - The firstname is mandatory.
- * - The birthdate is mandatory.
+ * - The resume is optional, it can be set later in the process.
  */
 public class Teacher {
 
@@ -22,19 +20,18 @@ public class Teacher {
     private final Username username; // referenced the user by its username to have a loosely coupling
     private Lastname lastname;
     private Firstname firstname;
-    private Birthdate birthdate;
+    private Resume resume;
 
-    public Teacher(TeacherId teacherId, Username username, Lastname lastname, Firstname firstname, Birthdate birthdate) {
+    public Teacher(TeacherId teacherId, Username username, Lastname lastname, Firstname firstname, Resume resume) {
         checkTeacherIdMandatory(teacherId);
         checkUsernameMandatory(username);
         checkLastnameMandatory(lastname);
         checkFirstnameMandatory(firstname);
-        checkBirthdateMandatory(birthdate);
         this.teacherId = teacherId;
         this.username = username;
         this.lastname = lastname;
         this.firstname = firstname;
-        this.birthdate = birthdate;
+        this.resume = resume;
     }
 
     /**
@@ -48,7 +45,7 @@ public class Teacher {
                 command.username(),
                 command.lastname(),
                 command.firstname(),
-                command.birthdate()
+                command.resume()
         );
     }
 
@@ -76,12 +73,6 @@ public class Teacher {
         }
     }
 
-    private void checkBirthdateMandatory(Birthdate birthdate) {
-        if (birthdate == null) {
-            throw new IllegalArgumentException("birthdate must not be null");
-        }
-    }
-
     public TeacherId teacherId() {
         return teacherId;
     }
@@ -98,8 +89,8 @@ public class Teacher {
         return firstname;
     }
 
-    public Birthdate birthdate() {
-        return birthdate;
+    public Resume resume() {
+        return resume;
     }
 
     /**
@@ -111,8 +102,8 @@ public class Teacher {
     public boolean updateInformation(UpdateTeacherCommand command) {
         boolean updatedLastname = updateLastname(command.lastname());
         boolean updatedFirstname = updateFirstname(command.firstname());
-        boolean updatedBirthdate = updateBirthdate(command.birthdate());
-        return updatedLastname || updatedFirstname || updatedBirthdate;
+        boolean updatedResume = updateResume(command.resume());
+        return updatedLastname || updatedFirstname || updatedResume;
     }
 
     private boolean updateLastname(Lastname newValue) {
@@ -131,9 +122,9 @@ public class Teacher {
         return false;
     }
 
-    private boolean updateBirthdate(Birthdate newValue) {
-        if (newValue != null && !newValue.equals(birthdate)) {
-            birthdate = newValue;
+    private boolean updateResume(Resume newValue) {
+        if (newValue != null && !newValue.equals(resume)) {
+            resume = newValue;
             return true;
         }
         return false;

@@ -1,8 +1,9 @@
 package amb.mat.school.life.teacherservice.application.command;
 
-import amb.mat.school.life.teacherservice.domain.teacher.Birthdate;
 import amb.mat.school.life.teacherservice.domain.teacher.Firstname;
 import amb.mat.school.life.teacherservice.domain.teacher.Lastname;
+import amb.mat.school.life.teacherservice.domain.teacher.Resume;
+import amb.mat.school.life.teacherservice.domain.teacher.command.Command;
 import amb.mat.school.life.teacherservice.domain.user.EmailAddress;
 import amb.mat.school.life.teacherservice.domain.user.Password;
 import amb.mat.school.life.teacherservice.domain.user.Username;
@@ -13,8 +14,8 @@ public record CreateTeacherAndUserCommand(
         EmailAddress emailAddress,
         Lastname lastname,
         Firstname firstname,
-        Birthdate birthdate
-) {
+        Resume resume
+) implements Command {
 
     private static final String ERROR_MESSAGE_TEMPLATE = "to create a new teacher, %s";
 
@@ -24,7 +25,6 @@ public record CreateTeacherAndUserCommand(
         checkEmailAddressMandatory(emailAddress);
         checkLastname(lastname);
         checkFirstname(firstname);
-        checkBirthdate(birthdate);
     }
 
     private void checkUsernameMandatory(Username username) {
@@ -54,12 +54,6 @@ public record CreateTeacherAndUserCommand(
     private void checkFirstname(Firstname username) {
         if (username == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the firstname is required"));
-        }
-    }
-
-    private void checkBirthdate(Birthdate username) {
-        if (username == null) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_TEMPLATE.formatted("the birthdate is required"));
         }
     }
 }

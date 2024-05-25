@@ -83,6 +83,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jmxPort>9081</jmxPort>
+                </configuration>
             </plugin>
         </plugins>
     </build>

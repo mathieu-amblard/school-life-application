@@ -1,7 +1,5 @@
 package amb.mat.school.life.studentservice.domain.student;
 
-// TODO record ?
-
 import amb.mat.school.life.studentservice.domain.student.command.CreateStudentCommand;
 import amb.mat.school.life.studentservice.domain.student.command.UpdateStudentCommand;
 import amb.mat.school.life.studentservice.domain.user.Username;
