@@ -62,9 +62,9 @@ BoundedContext WorkshopContext implements WorkshopDomain {
 			- WorkshopId id
 			String title
 			String description
-			String where
+			String location
 			Date when
-			- YearRange target
+			- AgeRange target
 			- Capacity capacity
 			- Teacher teacher
 			- List<Student> students
@@ -75,21 +75,21 @@ BoundedContext WorkshopContext implements WorkshopDomain {
 			int value key
 		}
 
-		ValueObject YearRange {
-			int fromYear key
-			int toYear key
+		ValueObject AgeRange {
+			int from key
+			int to key
 		}
 
 		ValueObject Capacity {
-			int fromNumber key
-			int toNumber key
+			int min key
+			int max key
 		}
 	}
 }
 
 BoundedContext TeacherContext implements TeacherDomain {
 	type = APPLICATION
-	domainVisionStatement = "This bounded context allows teachers to modify their data."
+	domainVisionStatement = "This bounded context allows administrators to modify data of teachers."
 	responsibilities = "Teachers, Accounts"
 	implementationTechnology = "Java, Spring Boot"
 	knowledgeLevel = CONCRETE
@@ -115,7 +115,7 @@ BoundedContext TeacherContext implements TeacherDomain {
 
 BoundedContext StudentContext implements StudentDomain {
 	type = APPLICATION
-	domainVisionStatement = "This bounded context allows teachers manage data of students."
+	domainVisionStatement = "This bounded context allows administrators to manage data of students."
 	responsibilities = "Students"
 	implementationTechnology = "Java, Spring Boot"
 	knowledgeLevel = CONCRETE

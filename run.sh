@@ -94,12 +94,17 @@ teacher() {
   compileAndRestart teacher-service 8083
 }
 
+workshop() {
+  compileAndRestart workshop-service 8084
+}
+
 all() {
   database
   userManagement
   apiGateway
   student
   teacher
+  workshop
 }
 
 $1

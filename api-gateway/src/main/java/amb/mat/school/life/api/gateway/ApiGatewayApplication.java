@@ -41,6 +41,14 @@ public class ApiGatewayApplication {
                         )
                         .uri("http://localhost:8083")
                 )
+                .route(route -> route
+                        .path("/workshop/**")
+                        .filters(filter -> filter
+                                .rewritePath("/workshop/(?<segment>.*)", "/${segment}")
+                                .tokenRelay()
+                        )
+                        .uri("http://localhost:8084")
+                )
                 .build();
     }
 }
