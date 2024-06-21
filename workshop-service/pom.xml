@@ -19,6 +19,7 @@
     <modules>
         <module>workshop-domain</module>
         <module>workshop-main</module>
+        <module>workshop-persistence</module>
     </modules>
     <properties>
         <java.version>21</java.version>

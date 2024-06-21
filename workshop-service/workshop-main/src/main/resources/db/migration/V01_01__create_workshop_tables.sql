@@ -5,12 +5,13 @@ create table if not exists workshops
     teacher_id  text not null,
     title       text not null,
     description text,
-    location    text,
-    date        date,
+    "where"     text,
+    "when"      date,
     fromAge     integer,
     toAge       integer,
     minCapacity integer,
-    maxCapacity integer
+    maxCapacity integer,
+    done        boolean
 );
 
 create table if not exists registrations

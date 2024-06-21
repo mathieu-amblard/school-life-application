@@ -6,6 +6,7 @@ public class AndSpecification<T> implements Specification<T> {
 
     private final Specification<T>[] specifications;
 
+    @SafeVarargs
     public AndSpecification(Specification<T>... specifications) {
         this.specifications = specifications;
     }

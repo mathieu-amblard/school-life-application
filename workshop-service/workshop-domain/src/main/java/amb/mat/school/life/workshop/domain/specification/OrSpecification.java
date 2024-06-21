@@ -6,6 +6,7 @@ public class OrSpecification<T> implements Specification<T> {
 
     private final Specification<T>[] specifications;
 
+    @SafeVarargs
     public OrSpecification(Specification<T>... specifications) {
         this.specifications = specifications;
     }

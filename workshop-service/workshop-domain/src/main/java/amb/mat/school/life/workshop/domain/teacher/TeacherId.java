@@ -1,4 +1,4 @@
-package amb.mat.school.life.workshop.domain.workshop;
+package amb.mat.school.life.workshop.domain.teacher;
 
 import amb.mat.school.life.workshop.domain.specification.AndSpecification;
 import amb.mat.school.life.workshop.domain.specification.Specification;
@@ -7,19 +7,18 @@ import amb.mat.school.life.workshop.domain.specification.invariant.UuidSpecifica
 
 import java.util.UUID;
 
-public record WorkshopId(String value) {
+public record TeacherId(String value) {
 
     private static final Specification<String> UUID_IDENTIFIER_SPECIFICATION = new AndSpecification<>(
             new NotNullSpecification<>(),
             new UuidSpecification()
     );
 
-    public WorkshopId {
+    public TeacherId {
         UUID_IDENTIFIER_SPECIFICATION.validate(value);
     }
 
-    public WorkshopId(UUID uuid) {
+    public TeacherId(UUID uuid) {
         this(uuid.toString());
     }
 }
-

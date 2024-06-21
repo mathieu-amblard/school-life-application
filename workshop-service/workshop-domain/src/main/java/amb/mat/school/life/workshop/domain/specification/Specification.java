@@ -1,5 +1,8 @@
 package amb.mat.school.life.workshop.domain.specification;
 
+/**
+ * Inspired from <i>Domain-Driven Design: Tackling Complexity in the Heart of Software (Eric Evans)</i>
+ */
 public interface Specification<T> {
 
     boolean isSatisfiedBy(T candidate);

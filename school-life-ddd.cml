@@ -64,11 +64,12 @@ BoundedContext WorkshopContext implements WorkshopDomain {
 			String description
 			String location
 			Date when
-			- AgeRange target
+			- AgeRange ageRange
 			- Capacity capacity
 			- Teacher teacher
-			- List<Student> students
-			- List<Equipment> equipments
+			- Set<Student> students
+			- Set<Equipment> equipments
+			boolean done
 		}
 
 		ValueObject WorkshopId {
